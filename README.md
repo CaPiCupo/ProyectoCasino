@@ -14,9 +14,11 @@ automaticamente debera de crearse el proyecto, pero si no sale File --> Import -
 
 Project from Git --> Clone URL
 
+
 Si en el menu de Teams (click derecho sobre el proyecto aparecera como una de las opciones) aparece commit, pull, push.. y tal, bien todo a salido bien
 
 Si no sale click derecho sobre proyecto Team --> Share Proyect --> Git... seleccionan el repositorio clonado y ya estaria.
+
 
 RECORDAR SIEMPRE PULL ANTES DE EMPEZAR A PROGRAMAR
 
