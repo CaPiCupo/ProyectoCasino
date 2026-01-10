@@ -1,4 +1,4 @@
-# ProyectoCasino learlo en raw
+# ProyectoCasino learlo en code
 RECORDAR SIEMPRE PULL ANTES DE EMPEZAR
 para activarlo desde eclipse vayanse a perspective --> Open Perspectve --> Git
 en el se les abrira una ventana en su barra de tareas 
