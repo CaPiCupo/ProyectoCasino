@@ -11,10 +11,10 @@ public class Interfaz {
 		Usuario us4 = new Usuario();*/
 		Met met= new Met();
 		//PantallaCarga ptcg = new PantallaCarga();
-		final int usMax = 4; //4? 
-		Usuario[] usArray = new Usuario[usMax];
+		final int USMAX = 4; //4? 
+		Usuario[] usArray = new Usuario[USMAX];
 		int i;
-		for (i = 0; i < usMax; i++) {
+		for (i = 0; i < USMAX; i++) {
 		    usArray[i] = new Usuario();
 		    usArray[i].setNombre("Vacio");
 		    usArray[i].setDinero(new BigDecimal("0"));
@@ -82,6 +82,8 @@ public class Interfaz {
 			running = true;
 			/*MENU
 			 * -Cambio de usuario (1)
+			 * 	//		s = String.valueOf(ArrInt[i][j]);
+				//		System.out.printf("%-10s", s);
 			 * -Dinero de cada usuario (2)
 			 * -Banco dame dinero (3)
 			 * -JUEGOS (4)

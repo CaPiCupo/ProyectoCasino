@@ -3,7 +3,9 @@ package casino;
 import java.io.IOException;
 
 public class Met {
-	// Codigo sacado de --> https://www.quora.com/What-is-the-way-to-clear-eclipse-console-using-Java (No tengo ni idea de como funciona)
+	// Codigo sacado de --> https://www.quora.com/What-is-the-way-to-clear-eclipse-console-using-Java 
+	// Funciona identificando la consola (si es cmd o de kernet UNIX) y escribiendo el comando de limpieza
+	// Entiendo como va pero poco mas. Es solo estetico y ni funciona en la consola de Eclipse asi que se puede borrar sin muchas complicaciones
     public void limpiarConsola() {
         String os = System.getProperty("os.name").toLowerCase();
         try {
@@ -16,7 +18,7 @@ public class Met {
                 Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", "clear"});
                 process.waitFor();
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException e) { 
             for (int i = 0; i < 50; i++) {
                 System.out.println();
             }
