@@ -188,7 +188,9 @@ public class Interfaz {
 				    case (2):	
 				    		booOp1 = false;
 				    break;
-			        
+				    default: 
+				    		System.out.println("\nCARACTER NO ESPECIFICADO \n");
+				    	break;
 			        }
 			    	} while(booOp1);
 			    
