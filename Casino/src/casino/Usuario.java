@@ -13,6 +13,8 @@ public class Usuario {
 	public Usuario() {
 	}
 	
+	final BigDecimal CERO = new BigDecimal("0");
+	
 	/*public Usuario(String nombre, BigDecimal dinero) {
 		this.nombre = nombre;
 		this.dinero = dinero.setScale(2, RoundingMode.HALF_EVEN);
@@ -31,6 +33,9 @@ public class Usuario {
 	}
 
 	public void setDinero(BigDecimal dinero) {
+		if(dinero.compareTo(CERO) < 0) {
+			dinero = CERO;
+		}
 		this.dinero = dinero.setScale(2, RoundingMode.HALF_EVEN);
 	}
 
@@ -47,6 +52,9 @@ public class Usuario {
 	}
 
 	public void setUsoBanco(int usoBanco) {
+		if(usoBanco < 0) {
+			usoBanco = 0;
+		}
 		this.usoBanco = usoBanco;
 	}
 	

@@ -196,6 +196,7 @@ public class Interfaz {
 				    	break;
 			        }
 			    	} while(booOp1);
+			    break;
 			    
 			    case (2): //Banco (la idea es si esta en negativos pierda una vida    
 			    	boolean booOp2;
@@ -224,15 +225,15 @@ public class Interfaz {
 					    		booOp2 = false;
 			    			break;
 			    			case (69): //Para meeter dinero y probar
-			    				System.out.println("\n OPCION DESARROLLADOR ACTIVADA");
+			    				System.out.println("\nOPCION DESARROLLADOR ACTIVADA");
 			    				System.out.print("Introduzca el dinero que quieras meter: ");
 			    				String str69 = sc.next().replace(",", ".");
 			    				BigDecimal dnNw = new BigDecimal(str69);
 			    				usArray[i].setDinero(dnAct.add(dnNw));
-			    			/* if(dnNw.compareTo(CERO) >= 0) { 
+			    				/*if(dnNw.compareTo(CERO) >= 0) { 
 			    				usArray[i].setDinero(dnAct.add(dnNw));
 			    				} else {
-			    				usArray[i].setDinero(dnAct.add(dnNw));	
+			    				usArray[i].setDinero(dnAct.subtract(dnNw));	
 			    				}*/
 			    			break;
 						default:
@@ -243,7 +244,8 @@ public class Interfaz {
 			    } else {
 			    		System.out.println("El banco no confia mas en ti" + "\n FUERA DE AQUI");
 			    }
-			    System.out.println();
+			    System.out.println("");
+			    break;
 			}
 				
 			while (playing) {
