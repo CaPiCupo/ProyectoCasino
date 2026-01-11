@@ -104,6 +104,7 @@ public class Interfaz {
 			 "\n   -JUEGOS (3)" +
 			 "\n   -Creditos (4)" +
 			 "\n   -Cerrar Sesion (5)"
+			 //Multijugador??
 					);
 			System.out.print("\nIntroduzca numero correspondiente: ");
 			int resp = sc.nextInt();
