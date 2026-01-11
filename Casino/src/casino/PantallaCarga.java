@@ -2,7 +2,7 @@ package casino;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
-//Sacado de las profundidades de Quora (no se como funciona)
+//Sacado de las profundidades de Quora (no se como funciona pero tratere de usarlo para los caballos)
 public class PantallaCarga {
 		public static void main(String[] args) {
 		    long total = 235;

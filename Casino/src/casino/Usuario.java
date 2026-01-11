@@ -7,6 +7,8 @@ public class Usuario {
 	
 	private String nombre;
 	private BigDecimal dinero;
+	private boolean usoPromocion;
+	private int usoBanco;
 	
 	public Usuario() {
 	}
@@ -31,6 +33,24 @@ public class Usuario {
 	public void setDinero(BigDecimal dinero) {
 		this.dinero = dinero.setScale(2, RoundingMode.HALF_EVEN);
 	}
+
+	public boolean isUsoPromocion() {
+		return usoPromocion;
+	}
+
+	public void setUsoPromocion(boolean usoPromocion) {
+		this.usoPromocion = usoPromocion;
+	}
+
+	public int getUsoBanco() {
+		return usoBanco;
+	}
+
+	public void setUsoBanco(int usoBanco) {
+		this.usoBanco = usoBanco;
+	}
+	
+	
 }
 /*BigDecimal value1 = new BigDecimal("4.5");
 value1=value1.setScale(0, RoundingMode.HALF_EVEN);
