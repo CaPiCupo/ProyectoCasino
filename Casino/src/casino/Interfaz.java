@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.math.BigDecimal;
 
 public class Interfaz {
+	//Cambiar cada lectura de un int de int ejem = sc.nextInt() a int ejem = Integer.parseInt(sc.next()); evita fallos
 	static Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) {
 		/*Usuario us2 = new Usuario();
@@ -132,7 +133,7 @@ public class Interfaz {
 			        		int respOp1Op1 = sc.nextInt() -1;
 			        	 	do {
 			        	 		booOp1Op = false;
-			        		if(respOp1Op1 < USMAX && respOp1Op1 >= 0) {
+			        		if(respOp1Op1 < USMAX && respOp1Op1 >= 0) {	
 			        			i = respOp1Op1;
 			        			if(usArray[i].getNombre().equals("Vacio")) {
 			        				System.out.println("\nIDENTIFICADA CUENTA NUEVA");
@@ -174,6 +175,8 @@ public class Interfaz {
 										} else if(respNombreFm.equals("S") || respNombreFm.equals("SI")) {
 											usArray[i].setNombre("Vacio");
 										    usArray[i].setDinero(new BigDecimal("0"));
+										    usArray[i].setUsoPromocion(false);
+										    usArray[i].setUsoBanco(3);
 										    System.out.println("Formateo Terminado \n");
 										    booOp1Op = true;
 										} else {
@@ -195,6 +198,52 @@ public class Interfaz {
 			    	} while(booOp1);
 			    
 			    case (2): //Banco (la idea es si esta en negativos pierda una vida    
+			    	boolean booOp2;
+			    if(!(usArray[i].getUsoBanco() == 0)) {
+			    		do {
+			    			booOp2 = true;
+			    			BigDecimal dnAct = usArray[i].getDinero();
+			  			    if (dnAct == null) {
+			  			        dnAct = BigDecimal.ZERO;
+			  			}
+			    			System.out.println("\n -------|MENU DEL BANCO|-------" +
+			    					 "\nDinero: " + usArray[i].getDinero() + "$" + "   Usos del Banco: " + usArray[i].getUsoBanco() +
+			    					 "\n   -Sacar dinero (1)" +
+			    					 "\n   -Como funciona (2)" +
+			    					 "\n   -Salir (3)" 
+			    							);
+					    System.out.print("Introduzca numero correspondiente: ");
+					    int respOp2 = sc.nextInt();
+			    			switch (respOp2) {
+			    			case (1):
+			    				
+			    			case (2):	
+						    	System.out.println("La idea es endeudarte con el banco y tener que devolver \nel doble de dinero en un limitado tiempo de turnos");
+						break;
+			    			case (3):	
+					    		booOp2 = false;
+			    			break;
+			    			case (69): //Para meeter dinero y probar
+			    				System.out.println("\n OPCION DESARROLLADOR ACTIVADA");
+			    				System.out.print("Introduzca el dinero que quieras meter: ");
+			    				String str69 = sc.next().replace(",", ".");
+			    				BigDecimal dnNw = new BigDecimal(str69);
+			    				usArray[i].setDinero(dnAct.add(dnNw));
+			    			/* if(dnNw.compareTo(CERO) >= 0) { 
+			    				usArray[i].setDinero(dnAct.add(dnNw));
+			    				} else {
+			    				usArray[i].setDinero(dnAct.add(dnNw));	
+			    				}*/
+			    			break;
+						default:
+						    System.out.println("\nCARACTER NO ESPECIFICADO \n");
+						break;
+			    			}
+			    		} while(booOp2);
+			    } else {
+			    		System.out.println("El banco no confia mas en ti" + "\n FUERA DE AQUI");
+			    }
+			    System.out.println();
 			}
 				
 			while (playing) {

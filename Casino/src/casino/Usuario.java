@@ -50,7 +50,8 @@ public class Usuario {
 		this.usoBanco = usoBanco;
 	}
 	
-	
+   
+
 }
 /*BigDecimal value1 = new BigDecimal("4.5");
 value1=value1.setScale(0, RoundingMode.HALF_EVEN);
