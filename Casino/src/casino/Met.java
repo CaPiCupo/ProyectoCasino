@@ -18,6 +18,7 @@ public class Met {
                 Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", "clear"});
                 process.waitFor();
             }
+            		//Esto si no es ni de Windows ni de Linux, empujara toda la consola hacia abajo.
         } catch (IOException | InterruptedException e) { 
             for (int i = 0; i < 50; i++) {
                 System.out.println();

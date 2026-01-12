@@ -12,7 +12,7 @@ public class Interfaz {
 		Usuario us4 = new Usuario();*/
 		Met met= new Met();
 		//PantallaCarga ptcg = new PantallaCarga();
-		BigDecimal CERO = new BigDecimal("0");
+		final BigDecimal CERO = new BigDecimal("0");
 		final int USMAX = 4; //4? 
 		Usuario[] usArray = new Usuario[USMAX];
 		int i;
@@ -24,6 +24,8 @@ public class Interfaz {
 		    usArray[i].setUsoBanco(3); //3?
 		    }
 		i = 0; //Inicie con el primer usuario de los 4
+		boolean multiplayer = false; //Si es mucha tela se quita
+		int i2 = -1; //Para probar si el multijugador es buena idea
 		boolean running;
 		boolean playing;
 		boolean boo;
@@ -104,8 +106,8 @@ public class Interfaz {
 			 "\n   -JUEGOS (3)" +
 			 "\n   -Creditos (4)" +
 			 "\n   -Cerrar Sesion (5)"
-			 //Multijugador??
-					);
+			 //Multijugador?? 
+					); 
 			System.out.print("\nIntroduzca numero correspondiente: ");
 			int resp = sc.nextInt();
 			System.out.println("\n");
@@ -205,9 +207,9 @@ public class Interfaz {
 			    		do {
 			    			booOp2 = true;
 			    			BigDecimal dnAct = usArray[i].getDinero();
-			  			    if (dnAct == null) {
-			  			        dnAct = BigDecimal.ZERO;
-			  			}
+			  			/*    if (dnAct == null) {
+			  			        dnAct = CERO;
+			  			}*/
 			    			System.out.println("\n -------|MENU DEL BANCO|-------" +
 			    					 "\nDinero: " + usArray[i].getDinero() + "$" + "   Usos del Banco: " + usArray[i].getUsoBanco() +
 			    					 "\n   -Sacar dinero (1)" +
@@ -247,15 +249,35 @@ public class Interfaz {
 			    }
 			    System.out.println("");
 			    break;
-			}
+			    case (3):
+			    	playing  = true;
+			    while (playing) {
+					playing  = true;
+					System.out.println("Probando");
+					//UmamusumePrettyDerby caballos = new UmamusumePrettyDerby(usArray[i]);
+				UmamusumePrettyDerby caballos;
+				if(!multiplayer) {
+				caballos = new UmamusumePrettyDerby(usArray[i], null, multiplayer);	
+				} else {
+				caballos = new UmamusumePrettyDerby(usArray[i], usArray[i2], multiplayer);	
+				}
 				
-			while (playing) {
-				playing  = true;
+				Poker pachigada;
+				if(!multiplayer) {
+				pachigada = new Poker(usArray[i], null, multiplayer);	
+				} else {
+				pachigada = new Poker(usArray[i], usArray[i2], multiplayer);	
+				}
+
 				/*JUEGOS
-				 *  
-				 */
-				
+					 * 
+					 *  
+					 */
+				break;
+				}
 			}
+				
+
 		} else {
 			System.out.println("No mas dinero " + 
 					"\n No mas confianza del banco"
