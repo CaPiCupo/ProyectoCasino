@@ -18,7 +18,7 @@ public class UmamusumePrettyDerby {
 	
 	public void juegodeCaballos() {
 		System.out.println("Patata");
-		System.out.println(us.getNombre());
+
 	}
 	PantallaCarga pc = new PantallaCarga();
 	
