@@ -7,20 +7,26 @@ public class Poker {
 	private Usuario us; 
 	private Usuario us2;
 	private boolean multijugador;
-	
+	static final int maxct = 52;
+	static Cartas[] ct = new Cartas[maxct];	
 	
 	public Poker (Usuario us, Usuario us2, boolean multijugador) {
 		this.us = us;
 		this.multijugador = multijugador;
 		this.us2 = us2;
 		
+		generarCarta();
 		juegodePoker();
 		
+		
 	}
-	
 	public void juegodePoker() {
-		final int maxct = 52;
-		Cartas[] ct = new Cartas[maxct];		
+		for(int f = 0; f < maxct; ++f) {
+			System.out.println(ct[f].getCp() + " = " + ct[f].getValor());
+		}
+		us.getDinero();
+	}
+	public void generarCarta() {	
 		int i;
 		int i2 = 0;
 		int cnm = 1;
@@ -68,11 +74,6 @@ public class Poker {
 	      	vnm = new BigDecimal("0.05");
 	     	i2++;
 	        }
-
-		}
-		
-		for(int f = 0; f < maxct; ++f) {
-			System.out.println(ct[f].getCp() + " = " + ct[f].getValor());
-		}
+		}				
 	}
 }

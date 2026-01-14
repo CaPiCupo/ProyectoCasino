@@ -28,4 +28,15 @@ public class Met {
     public void moverCursorInicio() {
         System.out.print("\r");
     }
+    public long factorial(int n) {
+        if (n < 0) {
+            return 0;
+        } else {
+        		long resultado = 1; 
+        		for (int i = 2; i <= n; i++) { 
+        			resultado *= i; 
+        }
+        		return resultado;
+        }
+    }
 }
