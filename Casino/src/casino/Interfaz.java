@@ -223,14 +223,11 @@ public class Interfaz {
 			    				boolean booOp2Op1;
 			    				do {
 			    					booOp2Op1 = true;
-			    					/*"\n -------|SACAR DINERO|-------" +
-			    					 "\n   -Financiarse (1)" +
-			    					 "\n   -Endeudarte (2)" +
-			    					 "\n   -Salir (3)" 
-			    							);
-			    					 * 
-			    					 */
-			    					
+			    					System.out.println("\n -------|SACAR DINERO|-------" +
+					    					 "\n   -Financiarse (1)" +
+					    					 "\n   -Endeudarte (2)" +
+					    					 "\n   -Salir (3)" );
+
 			    				} while (booOp2Op1);
 			    			case (2):	
 						    	System.out.println("La idea es endeudarte con el banco y tener que devolver \nel doble de dinero en un limitado tiempo de turnos");
@@ -248,6 +245,7 @@ public class Interfaz {
 			    				usArray[i].setDinero(dnAct.add(dnNw));
 			    				} else {
 			    				usArray[i].setDinero(dnAct.subtract(dnNw));	
+			    				a
 			    				}*/
 			    			break;
 						default:
