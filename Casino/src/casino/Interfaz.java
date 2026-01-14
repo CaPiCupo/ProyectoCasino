@@ -19,7 +19,9 @@ public class Interfaz {
 		for (i = 0; i < USMAX; i++) {
 		    usArray[i] = new Usuario();
 		    usArray[i].setNombre("Vacio");
+		    usArray[i].setDeuda(new BigDecimal("0"));
 		    usArray[i].setDinero(new BigDecimal("0"));
+		    usArray[i].setTmEnDeuda(-1);
 		    usArray[i].setUsoPromocion(false);
 		    usArray[i].setUsoBanco(3); //3?
 		    }
@@ -99,15 +101,22 @@ public class Interfaz {
 			 */
 			if(!(usArray[i].getUsoBanco() == 0 && usArray[i].getDinero().compareTo(CERO) <= 0)) {
 			met.limpiarConsola();
-			System.out.println("\n\n -------|MENU|-------" +
-			 "\n Nombre Usuario " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Usos del Banco: " + usArray[i].getUsoBanco() +
-			 "\n   -Usuarios (1)" +
-			 "\n   -Banco dame dinero (2)" +
-			 "\n   -JUEGOS (3)" +
-			 "\n   -Creditos (4)" +
-			 "\n   -Cerrar Sesion (5)"
-			 //Multijugador?? 
-					); 
+			System.out.println("\n\n -------|MENU|-------");
+			if(usArray[i].getTmEnDeuda() != -1) {
+				System.out.println(" Nombre Usuario " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Deuda: -" + usArray[i].getDeuda() + "$" + "   Tiempo Deuda: " + usArray[i].getTmEnDeuda() + " turnos    ");
+
+			} else {
+				System.out.println(" Nombre Usuario " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Usos del Banco: " + usArray[i].getUsoBanco()); 
+
+			}
+			System.out.println(
+					 "   -Usuarios (1)" +
+					 "\n   -Banco dame dinero (2)" +
+					 "\n   -JUEGOS (3)" +
+					 "\n   -Creditos (4)" +
+					 "\n   -Cerrar Sesion (5)"
+					 //Multijugador??
+					 );
 			System.out.print("\nIntroduzca numero correspondiente: ");
 			int resp = sc.nextInt();
 			System.out.println("\n");
@@ -176,10 +185,13 @@ public class Interfaz {
 													System.out.println("\nCARACTER NO ESPECIFICADO \n");
 					        						}
 										} else if(respNombreFm.equals("S") || respNombreFm.equals("SI")) {
-											usArray[i].setNombre("Vacio");
-										    usArray[i].setDinero(new BigDecimal("0"));
-										    usArray[i].setUsoPromocion(false);
-										    usArray[i].setUsoBanco(3);
+											 	usArray[i] = new Usuario();
+											    usArray[i].setNombre("Vacio");
+											    usArray[i].setDeuda(new BigDecimal("0"));
+											    usArray[i].setDinero(new BigDecimal("0"));
+											    usArray[i].setTmEnDeuda(-1);
+											    usArray[i].setUsoPromocion(false);
+											    usArray[i].setUsoBanco(3); //3?
 										    System.out.println("Formateo Terminado \n");
 										    booOp1Op = true;
 										} else {
@@ -224,11 +236,67 @@ public class Interfaz {
 			    				do {
 			    					booOp2Op1 = true;
 			    					System.out.println("\n -------|SACAR DINERO|-------" +
-					    					 "\n   -Financiarse (1)" +
-					    					 "\n   -Endeudarte (2)" +
+					    					 "\n   -Endeudarte (1)" +	//Dar dinero y luego devolver el doble;
+					    					 "\n   -Financiarse (2)" +	//Dar dinero si menos de 0 = -1 uso de Usos banco
 					    					 "\n   -Salir (3)" );
+								    System.out.print("Introduzca numero correspondiente: ");
+								    int respOp2Op1 = sc.nextInt();
+								    switch (respOp2Op1) {
+								    case (1): 
+							    		if(usArray[i].getTmEnDeuda() == -1) {
+							    			System.out.println("\nBienvenido a la opcion endeudarse");
+									    	System.out.println("Se le permitira pedir dinero y en 5 turnos se cobrara el doble");
+									    	System.out.println("¿Desea continuar con la operacion? N/S");
+					        				String respDeuda1 = sc.next().toUpperCase(); 
+										if(respDeuda1.equals("N") || respDeuda1.equals("NO")) {
+										System.out.println("\n Volviendo al menu \n");
+										} else if(respDeuda1.equals("S") || respDeuda1.equals("SI")) {
+										double intereses = 2;
+										System.out.print("Introduzca la cantidad: ");
+										String str1 = sc.next().replace(",", ".");  //PONER LIMITE BASADO EN EL DINERO (dinero = 100 =>> MAX = 1000)
+					    					BigDecimal dnNw = new BigDecimal(str1);
+					    					usArray[i].setDinero(dnAct.add(dnNw));
+					    					usArray[i].setDeuda(dnNw.multiply(new BigDecimal(intereses)));
+					    					intereses += intereses * 0.75;
+					    					usArray[i].setTmEnDeuda(5);
+					    					booOp2Op1 = false;
+					    					booOp2 = false;
+										} else {
+										System.out.println("CARACTER NO RECONOCIDO");
+										}
+							    		} else {
+											System.out.println("No te puedes ENDEUDARSE estando ya endeudado");
+									}
 
+
+								    	break;
+								    case (2): 
+								    		if(usArray[i].getDinero().compareTo(CERO) == 0) {
+								    			System.out.println("Bienvenido a la opcion financiarse");
+								    			System.out.println("¿Desea USAR un punto de banco para obtener +100$ (no se pueden volver a obtener?  N/S"); //Quiza merece la pena quitar esta opcion
+						        				String respDeuda2 = sc.next().toUpperCase();
+											if(respDeuda2.equals("N") || respDeuda2.equals("NO")) {
+											System.out.println("\n Volviendo al menu \n");
+											} else if(respDeuda2.equals("S") || respDeuda2.equals("SI")) {
+											System.out.println("Efectuando la suma...");
+											usArray[i].setDinero(dnAct.add(new BigDecimal("100")));
+											usArray[i].setUsoBanco(usArray[i].getUsoBanco() -1); 
+											System.out.println("\n +100$ en la cuenta \n");
+											booOp2Op1 = false;
+					    						booOp2 = false;
+											} else {
+											System.out.println("CARACTER NO RECONOCIDO");
+											}
+								    		} else {
+												System.out.println("Esta opcion solo es efectuada para pobre (Dinero = 0)");
+										}
+								    	break;
+								    case (3):
+								    		booOp2Op1 = false;
+								    continue; // booOp2 = false; si se percata la profesora
+								    } 
 			    				} while (booOp2Op1);
+			    				break;
 			    			case (2):	
 						    	System.out.println("La idea es endeudarte con el banco y tener que devolver \nel doble de dinero en un limitado tiempo de turnos");
 						break;
@@ -254,7 +322,7 @@ public class Interfaz {
 			    			}
 			    		} while(booOp2);
 			    } else {
-			    		System.out.println("El banco no confia mas en ti" + "\n FUERA DE AQUI");
+			    		System.out.println("El banco no confia mas en ti" + "\nFUERA DE AQUI");
 			    }
 			    System.out.println("");
 			    break;
@@ -290,7 +358,7 @@ public class Interfaz {
 
 		} else {
 			System.out.println("No mas dinero " + 
-					"\n No mas confianza del banco"
+					"\nNo mas confianza del banco"
 					);
 			System.out.println("Fin del Juego");
 			running = false;

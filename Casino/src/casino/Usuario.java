@@ -7,8 +7,10 @@ public class Usuario {
 	
 	private String nombre;
 	private BigDecimal dinero;
+	private BigDecimal deuda;
 	private boolean usoPromocion;
 	private int usoBanco;
+	private int tmEnDeuda;
 	
 	public Usuario() {
 	}
@@ -33,10 +35,21 @@ public class Usuario {
 	}
 
 	public void setDinero(BigDecimal dinero) {
-		if(dinero.compareTo(CERO) < 0) {
-			dinero = CERO;
+		if (tmEnDeuda == 0 && dinero.compareTo(CERO) < 0) {
+			System.out.println("\n Se te acabo el tiempo para dar el dinero \n");
+			this.dinero = dinero.subtract(deuda);
+		} else if(dinero.compareTo(CERO) < 0) {
+				dinero = CERO;	
 		}
 		this.dinero = dinero.setScale(2, RoundingMode.HALF_EVEN);
+	}
+	
+	public BigDecimal getDeuda() {
+		return deuda;
+	}
+
+	public void setDeuda(BigDecimal deuda) {
+		this.deuda = deuda;
 	}
 
 	public boolean isUsoPromocion() {
@@ -56,6 +69,26 @@ public class Usuario {
 			usoBanco = 0;
 		}
 		this.usoBanco = usoBanco;
+	}
+
+	public int getTmEnDeuda() {
+		return tmEnDeuda;
+	}
+
+	public void setTmEnDeuda(int tmEnDeuda) {
+		if(dinero.compareTo(CERO) < 0) {
+			this.tmEnDeuda = 0;
+			return;
+		}  
+		
+		if (tmEnDeuda == 0) {
+			this.tmEnDeuda = -1;
+		} else {
+			/*if(tmEnDeuda < 0) {
+				tmEnDeuda = 0;
+			}*/
+			this.tmEnDeuda = tmEnDeuda;
+		}
 	}
 	
    
