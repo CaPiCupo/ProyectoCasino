@@ -24,7 +24,8 @@ public class Poker {
 		for(int f = 0; f < maxct; ++f) {
 			System.out.println(ct[f].getCp() + " = " + ct[f].getValor());
 		}
-		us.getDinero();
+		System.out.println(us.getDinero());
+		System.out.println(us.getNombre());
 	}
 	public void generarCarta() {	
 		int i;

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class PokerAI {
 	//AI para los juegadores del poker aaaa
-	//lo
+	//los
 	private String tipoAI;
 	private BigDecimal valueF;
 	private BigDecimal valueP;
