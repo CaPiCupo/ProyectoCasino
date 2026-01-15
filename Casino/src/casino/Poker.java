@@ -21,6 +21,7 @@ public class Poker {
 		
 	}
 	public void juegodePoker() {
+		BigDecimal dnAct = us.getDinero();
 		for(int f = 0; f < maxct; ++f) {
 			System.out.println(ct[f].getCp() + " = " + ct[f].getValor());
 		}

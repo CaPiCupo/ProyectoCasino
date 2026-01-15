@@ -330,7 +330,11 @@ public class Interfaz {
 			    	playing  = true;
 			    while (playing) {
 					playing  = true;
-					System.out.println("Probando");
+					System.out.println("\n -------|JUEGOS|-------" +
+					 "\n   -Apuestas de Caballos (1)" +	
+					 "\n   -Poker (2)" +	
+					 "\n   -ACTIVAR MULTIJUGADOR (3)" +	
+					 "\n   -Salir (4)" );
 					//UmamusumePrettyDerby caballos = new UmamusumePrettyDerby(usArray[i]);
 				UmamusumePrettyDerby caballos;
 				if(!multiplayer) {
