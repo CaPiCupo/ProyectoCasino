@@ -1,3 +1,4 @@
+//Blee 
 package casino;
 
 import java.util.Scanner;
@@ -102,13 +103,30 @@ public class Interfaz {
 			if(!(usArray[i].getUsoBanco() == 0 && usArray[i].getDinero().compareTo(CERO) <= 0)) {
 			met.limpiarConsola();
 			System.out.println("\n\n -------|MENU|-------");
-			if(usArray[i].getTmEnDeuda() != -1) {
-				System.out.println(" Nombre Usuario " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Deuda: -" + usArray[i].getDeuda() + "$" + "   Tiempo Deuda: " + usArray[i].getTmEnDeuda() + " turnos    ");
+			if(multiplayer) {
+				if(usArray[i].getTmEnDeuda() != -1) {
+					System.out.println(" Nombre Usuario Anfitrión " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Deuda: -" + usArray[i].getDeuda() + "$" + "   Tiempo Deuda: " + usArray[i].getTmEnDeuda() + " turnos    ");
 
+				} else {
+					System.out.println(" Nombre Usuario Anfitrión " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Usos del Banco: " + usArray[i].getUsoBanco()); 
+
+				}
+				if(usArray[i2].getTmEnDeuda() != -1) {
+					System.out.println(" Nombre Usuario Invitado " + (i2 + 1) +":  "+ usArray[i2].getNombre() + "   Dinero: " + usArray[i2].getDinero() + "$" + "   Deuda: -" + usArray[i2].getDeuda() + "$" + "   Tiempo Deuda: " + usArray[i2].getTmEnDeuda() + " turnos    ");
+
+				} else {
+					System.out.println(" Nombre Usuario Invitado " + (i2 + 1) +":  "+ usArray[i2].getNombre() + "   Dinero: " + usArray[i2].getDinero() + "$" + "   Usos del Banco: " + usArray[i2].getUsoBanco()); 
+
+				}	
 			} else {
-				System.out.println(" Nombre Usuario " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Usos del Banco: " + usArray[i].getUsoBanco()); 
+				if(usArray[i].getTmEnDeuda() != -1) {
+					System.out.println(" Nombre Usuario " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Deuda: -" + usArray[i].getDeuda() + "$" + "   Tiempo Deuda: " + usArray[i].getTmEnDeuda() + " turnos    ");
 
-			}
+				} else {
+					System.out.println(" Nombre Usuario " + (i + 1) +": "+ usArray[i].getNombre() + "   Dinero: " + usArray[i].getDinero() + "$" + "   Usos del Banco: " + usArray[i].getUsoBanco()); 
+
+				}	
+			}			
 			System.out.println(
 					 "   -Usuarios (1)" +
 					 "\n   -Banco dame dinero (2)" +
@@ -143,9 +161,10 @@ public class Interfaz {
 			        	boolean booOp1Op;
 			        		System.out.print("Introduzca numero del usuario " + "(" + (1) + "-" + (USMAX) + "): ");
 			        		int respOp1Op1 = sc.nextInt() -1;
-			        	 	do {
+			        	 	do { 
 			        	 		booOp1Op = false;
 			        		if(respOp1Op1 < USMAX && respOp1Op1 >= 0) {	
+			        			if(i2 != respOp1Op1) { //Blee
 			        			i = respOp1Op1;
 			        			if(usArray[i].getNombre().equals("Vacio")) {
 			        				System.out.println("\nIDENTIFICADA CUENTA NUEVA");
@@ -197,6 +216,23 @@ public class Interfaz {
 										} else {
 											System.out.println("\nCARACTER NO ESPECIFICADO \n");
 										}
+			        				}
+			        			} else {
+			        				System.out.println("Usuario ya en uso");
+			        				System.out.println("¿Desea intercambiar los usuarios?  N/S");
+		        					String respCambiarUs = sc.next().toUpperCase();
+			        				if(respCambiarUs.equals("S") || respCambiarUs.equals("SI")) {
+			        					int xUs = i;
+			        					i = i2;
+			        					i2 = xUs;
+	        							System.out.println("\n");
+	        							booOp1 = false;
+	        						} else if (!(respCambiarUs.equals("S") || respCambiarUs.equals("SI") || respCambiarUs.equals("N") || respCambiarUs.equals("NO") )){
+									System.out.println("\nCARACTER NO ESPECIFICADO \n");
+	        						} else {
+	        							booOp1 = false;
+	        						}
+			        				booOp1Op = true;
 			        			}
 			        		} else {
 			        			System.out.println("Numero Fuera de los Limites");
@@ -330,29 +366,128 @@ public class Interfaz {
 			    	playing  = true;
 			    while (playing) {
 					playing  = true;
+					if(multiplayer) {
 					System.out.println("\n -------|JUEGOS|-------" +
 					 "\n   -Apuestas de Caballos (1)" +	
 					 "\n   -Poker (2)" +	
-					 "\n   -ACTIVAR MULTIJUGADOR (3)" +	
-					 "\n   -Salir (4)" );
+					 "\n   -DESACTIVAR MULTIJUGADOR (3)" +	
+					 "\n   -Salir (3)" );
+					} else {
+						System.out.println("\n -------|JUEGOS|-------" +
+								 "\n   -Apuestas de Caballos (1)" +	
+								 "\n   -Poker (2)" +	
+								 "\n   -ACTIVAR MULTIJUGADOR (3)" +	
+								 "\n   -Salir (3)" );
+					}
 					//UmamusumePrettyDerby caballos = new UmamusumePrettyDerby(usArray[i]);
-				UmamusumePrettyDerby caballos;
-				if(!multiplayer) {
-				caballos = new UmamusumePrettyDerby(usArray[i], null, multiplayer);	
-				} else {
-				caballos = new UmamusumePrettyDerby(usArray[i], usArray[i2], multiplayer);	
-				}
+					 System.out.print("Introduzca numero correspondiente: ");
+					    int respOp3 = sc.nextInt();
+					    switch (respOp3) {
+					    case (1): 
+					    		UmamusumePrettyDerby caballos;
+							if(!multiplayer) {
+								caballos = new UmamusumePrettyDerby(usArray[i], null, multiplayer);	
+							} else {
+								caballos = new UmamusumePrettyDerby(usArray[i], usArray[i2], multiplayer);	
+							}
+							break;
+					    case (2):
+							Poker pachigada;
+							if(!multiplayer) {
+							System.out.println(usArray[i].getNombre());
+							pachigada = new Poker(usArray[i], null, multiplayer);	
+							} else {
+								pachigada = new Poker(usArray[i], usArray[i2], multiplayer);	
+							}
+							break;
+					    case (3):
+					    		boolean mutl;
+					    if(multiplayer == false) {
+					    		do {
+					    		mutl = true;
+					    			System.out.println("\nElige un usuario distinto a usuario " + (i+1)  + " y entre " + "(" + (1) + "-" + (USMAX) + "): ");
+					    			int pi2 = sc.nextInt() -1;
+					    			if(pi2 == i || pi2 > (USMAX-1) || pi2 <= 0) {
+					    				System.out.println("NUMERO DE USUARIO NO PERMITIDO "
+					    						+ "\nESCRIBA DE NUEVO");
+					    			} else {
+					    				multiplayer = true;
+					    				i2 = pi2;
+					        			if(usArray[i2].getNombre().equals("Vacio")) {
+					        				System.out.println("\nIDENTIFICADA CUENTA NUEVA");
+					        				System.out.print("Introduzca nombre de usuario " + (i2 +1) + ": ");
+					        				usArray[i2].setNombre(sc.next());
+										System.out.println("" +
+												"\nANALIZANDO DINERO EN LA CUENTA"
+													);
+										try {
+										Thread.sleep(800);
+										} catch (InterruptedException e) {	
+										}
+										System.out.println("Dinero Actual: " + usArray[i2].getDinero() + "$" + 
+												"\n\nACTIVANDO PROMOCION GRATUITA PARA POBRES" 									
+												);
+										usArray[i2].setUsoPromocion(true);
+										try {
+										Thread.sleep(800);
+										} catch (InterruptedException e) {	
+										}
+										usArray[i2].setDinero(new BigDecimal ("100.00"));
+										System.out.println("+100$ DE PROMOCION");
+										mutl  = false;
+					        			} else {
+					        				i2 = pi2;
+					        				mutl  = false;
+					        			}
+					    				
+					    				
+					    			}
+					    		} while (mutl);
+					    } else {
+								System.out.println("¿Desea desactivar la funcion de multijugador?  N/S"); //Quiza merece la pena quitar esta opcion
+			        				String respDeuda2 = sc.next().toUpperCase();
+								if(respDeuda2.equals("N") || respDeuda2.equals("NO")) {
+								System.out.println("\n Volviendo al menu \n");
+								} else if(respDeuda2.equals("S") || respDeuda2.equals("SI")) {
+								multiplayer = false;
+								i2 = -1;
+									}
+							    }
+					   }
 				
-				Poker pachigada;
-				if(!multiplayer) {
-					System.out.println(usArray[i].getNombre());
-				pachigada = new Poker(usArray[i], null, multiplayer);	
-				} else {
-				pachigada = new Poker(usArray[i], usArray[i2], multiplayer);	
-				}
+				
+
 
 				/*JUEGOS
 					 * 
+					 * System.out.print("Introduzca numero del usuario " + "(" + (1) + "-" + (USMAX) + "): ");
+			        		int respOp1Op1 = sc.nextInt() -1;
+			        	 	do {
+			        	 		booOp1Op = false;
+			        		if(respOp1Op1 < USMAX && respOp1Op1 >= 0) {	
+			        			i = respOp1Op1;
+			        			if(usArray[i].getNombre().equals("Vacio")) {
+			        				System.out.println("\nIDENTIFICADA CUENTA NUEVA");
+			        				System.out.print("Introduzca nombre de usuario " + (i +1) + ": ");
+			        				usArray[i].setNombre(sc.next());
+								System.out.println("" +
+										"\nANALIZANDO DINERO EN LA CUENTA"
+											);
+								try {
+								Thread.sleep(800);
+								} catch (InterruptedException e) {	
+								}
+								System.out.println("Dinero Actual: " + usArray[i].getDinero() + "$" + 
+										"\n\nACTIVANDO PROMOCION GRATUITA PARA POBRES" 									
+										);
+								usArray[i].setUsoPromocion(true);
+								try {
+								Thread.sleep(800);
+								} catch (InterruptedException e) {	
+								}
+								usArray[i].setDinero(new BigDecimal ("100.00"));
+								System.out.println("+100$ DE PROMOCION");
+			        				booOp1 = false;
 					 *  
 					 */
 				break;

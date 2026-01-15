@@ -27,6 +27,12 @@ public class Poker {
 		}
 		System.out.println(us.getDinero());
 		System.out.println(us.getNombre());
+		
+		
+		
+		
+		
+		us.setTmEnDeuda(us.getTmEnDeuda() -1);
 	}
 	public void generarCarta() {	
 		int i;
