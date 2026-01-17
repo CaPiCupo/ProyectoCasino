@@ -394,9 +394,11 @@ public class Interfaz {
 					    case (2):
 							Poker pachigada;
 							if(!multiplayer) {
-							System.out.println(usArray[i].getNombre());
+								//UsuarioPk jugador1 = new UsuarioPk(usArray[i]);
 							pachigada = new Poker(usArray[i], null, multiplayer);	
 							} else {
+								//UsuarioPk jugador1 = new UsuarioPk(usArray[i]);
+								//UsuarioPk jugador2 = new UsuarioPk(usArray[i2]);
 								pachigada = new Poker(usArray[i], usArray[i2], multiplayer);	
 							}
 							break;

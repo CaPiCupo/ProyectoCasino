@@ -6,34 +6,43 @@ public class Poker {
 	//JUEGO POKER MODALIDAD TEXAS HOLD'EM m
 	private Usuario us; 
 	private Usuario us2;
+	//private UsuarioPk us; 
+	//private UsuarioPk us2;
 	private boolean multijugador;
 	static final int maxct = 52;
 	static Cartas[] ct = new Cartas[maxct];	
 	
-	public Poker (Usuario us, Usuario us2, boolean multijugador) {
+	public Poker (/*UsuarioPk us, UsuarioPk us2*/Usuario us, Usuario us2, boolean multijugador) {
 		this.us = us;
 		this.multijugador = multijugador;
 		this.us2 = us2;
 		
+		//generarJugadores();
 		generarCarta();
 		juegodePoker();
-		
-		
+				
 	}
-	public void juegodePoker() {
-		BigDecimal dnAct = us.getDinero();
-		for(int f = 0; f < maxct; ++f) {
-			System.out.println(ct[f].getCp() + " = " + ct[f].getValor());
-		}
-		System.out.println(us.getDinero());
-		System.out.println(us.getNombre());
-		
-		
-		
-		
-		
-		us.setTmEnDeuda(us.getTmEnDeuda() -1);
-	}
+
+	/*public void generarJugadores() {
+		    us.setConDineroAun(true);
+	        us.setValueF(us.getDinero()); // fichas = dinero del usuario
+	        us.setValueP(BigDecimal.ZERO); 
+	        us.setCalleAct(0);
+	        us.setAllIn(false);
+	        us.setSidePot(false);
+	        us.setCartas(new Cartas[2]); // dos cartas privadas
+
+	        if (multijugador && us2 != null) {
+	            us2.setConDineroAun(true);
+	            us2.setValueF(us2.getDinero());
+	            us2.setValueP(BigDecimal.ZERO);
+	            us2.setCalleAct(0);
+	            us2.setAllIn(false);
+	            us2.setSidePot(false);
+	            us2.setCartas(new Cartas[2]);
+	        }
+	    
+	}*/
 	public void generarCarta() {	
 		int i;
 		int i2 = 0;
@@ -83,5 +92,19 @@ public class Poker {
 	     	i2++;
 	        }
 		}				
+	}
+	public void juegodePoker() {
+		BigDecimal dnAct = us.getDinero();
+		for(int f = 0; f < maxct; ++f) {
+			System.out.println(ct[f].getCp() + " = " + ct[f].getValor());
+		}
+		System.out.println(us.getDinero());
+		System.out.println(us.getNombre());
+		
+		
+		
+		
+		
+		us.setTmEnDeuda(us.getTmEnDeuda() -1);
 	}
 }

@@ -6,12 +6,17 @@ public class PokerAI {
 	//AI para los juegadores del poker aaaa
 	//los
 	private String tipoAI;
+    private Cartas[] cartas;
 	private BigDecimal valueF;
 	private BigDecimal valueP;
 	private BigDecimal eulerValue;
 	private BigDecimal dinero;
 	private int calleAct;
+	private int posicion;
 	private boolean multijugador;
+	private boolean allIn;
+	private boolean sidePot;
+	private boolean conDineroAun;
 	
 	public PokerAI(){	
 	}
@@ -70,6 +75,46 @@ public class PokerAI {
 
 	public void setMultijugador(boolean multijugador) {
 		this.multijugador = multijugador;
+	}
+
+	public Cartas[] getCartas() {
+		return cartas;
+	}
+
+	public void setCartas(Cartas[] cartas) {
+		this.cartas = cartas;
+	}
+
+	public int getPosicion() {
+		return posicion;
+	}
+
+	public void setPosicion(int posicion) {
+		this.posicion = posicion;
+	}
+
+	public boolean isAllIn() {
+		return allIn;
+	}
+
+	public void setAllIn(boolean allIn) {
+		this.allIn = allIn;
+	}
+
+	public boolean isSidePot() {
+		return sidePot;
+	}
+
+	public void setSidePot(boolean sidePot) {
+		this.sidePot = sidePot;
+	}
+
+	public boolean isConDineroAun() {
+		return conDineroAun;
+	}
+
+	public void setConDineroAun(boolean conDineroAun) {
+		this.conDineroAun = conDineroAun;
 	}
 	
 }
