@@ -4,33 +4,33 @@ import java.math.BigDecimal;
 
 public class Poker {
 	//JUEGO POKER MODALIDAD TEXAS HOLD'EM m
-	private Usuario us; 
-	private Usuario us2;
-	//private UsuarioPk us; 
-	//private UsuarioPk us2;
+	//private Usuario us; 
+	//private Usuario us2;
+	private UsuarioPk us; 
+	private UsuarioPk us2;
 	private boolean multijugador;
 	static final int maxct = 52;
 	static Cartas[] ct = new Cartas[maxct];	
 	
-	public Poker (/*UsuarioPk us, UsuarioPk us2*/Usuario us, Usuario us2, boolean multijugador) {
+	public Poker (UsuarioPk us, UsuarioPk us2,/*Usuario us, Usuario us2,*/ boolean multijugador) {
 		this.us = us;
 		this.multijugador = multijugador;
 		this.us2 = us2;
 		
-		//generarJugadores();
+		generarJugadores();
 		generarCarta();
 		juegodePoker();
 				
 	}
 
-	/*public void generarJugadores() {
+	public void generarJugadores() {
 		    us.setConDineroAun(true);
-	        us.setValueF(us.getDinero()); // fichas = dinero del usuario
+	        us.setValueF(us.getDinero());
 	        us.setValueP(BigDecimal.ZERO); 
 	        us.setCalleAct(0);
 	        us.setAllIn(false);
 	        us.setSidePot(false);
-	        us.setCartas(new Cartas[2]); // dos cartas privadas
+	        us.setCartas(new Cartas[2]);
 
 	        if (multijugador && us2 != null) {
 	            us2.setConDineroAun(true);
@@ -42,7 +42,7 @@ public class Poker {
 	            us2.setCartas(new Cartas[2]);
 	        }
 	    
-	}*/
+	}
 	public void generarCarta() {	
 		int i;
 		int i2 = 0;
@@ -105,6 +105,8 @@ public class Poker {
 		
 		
 		
-		us.setTmEnDeuda(us.getTmEnDeuda() -1);
+		if(us.getUsuario().getTmEnDeuda() != -1){//us.getUsuario().setDeuda(us.getUsuario().getDeuda().subtract(new BigDecimal ("1")));
+		us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
+		}
 	}
 }

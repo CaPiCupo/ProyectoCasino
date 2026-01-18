@@ -35,10 +35,11 @@ public class Usuario {
 	}
 
 	public void setDinero(BigDecimal dinero) {
-		if (tmEnDeuda == 0 && dinero.compareTo(CERO) < 0) {
+		if (tmEnDeuda == 0 && dinero.compareTo(CERO) > 0) {
 			System.out.println("\n Se te acabo el tiempo para dar el dinero \n");
 			this.dinero = dinero.subtract(deuda);
-		} else if(dinero.compareTo(CERO) < 0) {
+		}
+		if(dinero.compareTo(CERO) < 0) {
 				dinero = CERO;	
 		}
 		this.dinero = dinero.setScale(2, RoundingMode.HALF_EVEN);

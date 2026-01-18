@@ -394,12 +394,12 @@ public class Interfaz {
 					    case (2):
 							Poker pachigada;
 							if(!multiplayer) {
-								//UsuarioPk jugador1 = new UsuarioPk(usArray[i]);
-							pachigada = new Poker(usArray[i], null, multiplayer);	
+								UsuarioPk usPk = new UsuarioPk(usArray[i]);
+							pachigada = new Poker(usPk, null, multiplayer);	
 							} else {
-								//UsuarioPk jugador1 = new UsuarioPk(usArray[i]);
-								//UsuarioPk jugador2 = new UsuarioPk(usArray[i2]);
-								pachigada = new Poker(usArray[i], usArray[i2], multiplayer);	
+								UsuarioPk usPk = new UsuarioPk(usArray[i]);
+								UsuarioPk usPk2 = new UsuarioPk(usArray[i2]);
+								pachigada = new Poker(usPk, usPk2, multiplayer);	
 							}
 							break;
 					    case (3):
@@ -409,7 +409,7 @@ public class Interfaz {
 					    		mutl = true;
 					    			System.out.println("\nElige un usuario distinto a usuario " + (i+1)  + " y entre " + "(" + (1) + "-" + (USMAX) + "): ");
 					    			int pi2 = sc.nextInt() -1;
-					    			if(pi2 == i || pi2 > (USMAX-1) || pi2 <= 0) {
+					    			if(pi2 == i || pi2 > (USMAX-1) || pi2 < 0) {
 					    				System.out.println("NUMERO DE USUARIO NO PERMITIDO "
 					    						+ "\nESCRIBA DE NUEVO");
 					    			} else {
