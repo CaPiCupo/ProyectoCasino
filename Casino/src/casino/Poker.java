@@ -1,6 +1,8 @@
 package casino;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Poker {
 	//JUEGO POKER MODALIDAD TEXAS HOLD'EM m
@@ -10,7 +12,11 @@ public class Poker {
 	private UsuarioPk us2;
 	private boolean multijugador;
 	static final int maxct = 52;
-	static Cartas[] ct = new Cartas[maxct];	
+	static Cartas[] ct = new Cartas[maxct];
+	static Scanner sc = new Scanner(System.in);
+	static ArrayList<Cartas> liCUs = new ArrayList<Cartas>();
+	static ArrayList<Cartas> liCAi = new ArrayList<Cartas>();
+	static ArrayList<Cartas> liCTotal = new ArrayList<Cartas>();
 	
 	public Poker (UsuarioPk us, UsuarioPk us2,/*Usuario us, Usuario us2,*/ boolean multijugador) {
 		this.us = us;
@@ -22,10 +28,10 @@ public class Poker {
 		juegodePoker();
 				
 	}
-
+	
 	public void generarJugadores() {
 		    us.setConDineroAun(true);
-	        us.setValueF(us.getDinero());
+	        us.setValueF(us.getUsuario().getDinero());
 	        us.setValueP(BigDecimal.ZERO); 
 	        us.setCalleAct(0);
 	        us.setAllIn(false);
@@ -34,7 +40,7 @@ public class Poker {
 
 	        if (multijugador && us2 != null) {
 	            us2.setConDineroAun(true);
-	            us2.setValueF(us2.getDinero());
+	            us2.setValueF(us2.getUsuario().getDinero());
 	            us2.setValueP(BigDecimal.ZERO);
 	            us2.setCalleAct(0);
 	            us2.setAllIn(false);
@@ -78,10 +84,10 @@ public class Poker {
                 ct[i].setColor("♦"); // D de Diamante
             break;
             case (2):
-            		ct[i].setColor("♣"); // T de trebol
+            	ct[i].setColor("♣"); // T de trebol
             break;
             case (3):
-            		ct[i].setColor("♠"); // P de Pica
+            	ct[i].setColor("♠"); // P de Pica
 		    break;
         }
 		    cnm++;
@@ -91,22 +97,72 @@ public class Poker {
 	      	vnm = new BigDecimal("0.05");
 	     	i2++;
 	        }
-		}				
+		}
+		
 	}
+	
+	public static char identificarValor (ArrayList<Cartas> c) {
+		   
+		
+	}
+	
 	public void juegodePoker() {
-		BigDecimal dnAct = us.getDinero();
-		for(int f = 0; f < maxct; ++f) {
-			System.out.println(ct[f].getCp() + " = " + ct[f].getValor());
-		}
-		System.out.println(us.getDinero());
-		System.out.println(us.getNombre());
+		BigDecimal dnAct = us.getUsuario().getDinero();
+
+		Met.empujarMucho();
+		boolean booPo;
+		do {
+			booPo = false;
+	    	System.out.println("-------|MENU POKER|-------");
+				if(multijugador) {
+					if(us.getUsuario().getTmEnDeuda() != -1) {
+						System.out.println(" Nombre Usuario Anfitrión " + ": "+ us.getUsuario().getNombre() + "   Dinero: " + us.getUsuario().getDinero() + "$" + "   Deuda: -" + us.getUsuario().getDeuda() + "$" + "   Tiempo Deuda: " + us.getUsuario().getTmEnDeuda() + " turnos    ");
+
+					} else {
+						System.out.println(" Nombre Usuario Anfitrión " + ": "+ us.getUsuario().getNombre() + "   Dinero: " + us.getUsuario().getDinero() + "$" + "   Usos del Banco: " + us.getUsuario().getUsoBanco()); 
+
+					}
+					if(us2.getUsuario().getTmEnDeuda() != -1) {
+						System.out.println(" Nombre Usuario Invitado " + ":  "+ us2.getUsuario().getNombre() + "   Dinero: " + us2.getUsuario().getDinero() + "$" + "   Deuda: -" + us2.getUsuario().getDeuda() + "$" + "   Tiempo Deuda: " + us2.getUsuario().getTmEnDeuda() + " turnos    ");
+
+					} else {
+						System.out.println(" Nombre Usuario Invitado " + ":  "+ us2.getUsuario().getNombre() + "   Dinero: " + us2.getUsuario().getDinero() + "$" + "   Usos del Banco: " + us2.getUsuario().getUsoBanco()); 
+
+					}	
+				} else {
+					if(us.getUsuario().getTmEnDeuda() != -1) {
+						System.out.println(" Nombre Usuario " + ": "+ us.getUsuario().getNombre() + "   Dinero: " + us.getUsuario().getDinero() + "$" + "   Deuda: -" + us.getUsuario().getDeuda() + "$" + "   Tiempo Deuda: " + us.getUsuario().getTmEnDeuda() + " turnos    ");
+
+					} else {
+						System.out.println(" Nombre Usuario " + ": "+ us.getUsuario().getNombre() + "   Dinero: " + us.getUsuario().getDinero() + "$" + "   Usos del Banco: " + us.getUsuario().getUsoBanco()); 
+
+					}	
+				}			
+				System.out.println(
+						 "   -JUGAR (1)" +
+						 "\n   -Normas (2)" +
+						 "\n   -Salir (3)" 
+						 );
+				System.out.print("\nIntroduzca numero correspondiente: ");
+				int resp = sc.nextInt();
+				/*System.out.println("\n");
+					boolean booresp;
+					do {
+						booresp = true;
+							switch (resp) {
+							case (3):
+								booresp = false;
+							break;
+						default:
+							System.out.println("Caracter no encontrado");
+							booresp = false;
+						break;	
+						}
+					} while (booresp);
+		} while (booPo);*/
+		/*if(us.getUsuario().getUsuario().getTmEnDeuda() != -1){//us.getUsuario().setDeuda(us.getUsuario().getDeuda().subtract(new BigDecimal ("1")));
+		us.getUsuario().setTmEnDeuda(us.getUsuario().getUsuario().getTmEnDeuda() -1);
+		}*/
 		
-		
-		
-		
-		
-		if(us.getUsuario().getTmEnDeuda() != -1){//us.getUsuario().setDeuda(us.getUsuario().getDeuda().subtract(new BigDecimal ("1")));
-		us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
-		}
 	}
 }
