@@ -369,15 +369,17 @@ public class Interfaz {
 					if(multiplayer) {
 					System.out.println("\n -------|JUEGOS|-------" +
 					 "\n   -Apuestas de Caballos (1)" +	
-					 "\n   -Poker (2)" +	
-					 "\n   -DESACTIVAR MULTIJUGADOR (3)" +	
-					 "\n   -Salir (3)" );
+					 "\n   -Poker (2)" +
+					 "\n   -BlackJack (3)" +
+					 "\n   -DESACTIVAR MULTIJUGADOR (4)" +	
+					 "\n   -Salir (5)" );
 					} else {
 						System.out.println("\n -------|JUEGOS|-------" +
 								 "\n   -Apuestas de Caballos (1)" +	
 								 "\n   -Poker (2)" +	
-								 "\n   -ACTIVAR MULTIJUGADOR (3)" +	
-								 "\n   -Salir (3)" );
+								 "\n   -BlackJack (3)" +
+								 "\n   -ACTIVAR MULTIJUGADOR (4)" +	
+								 "\n   -Salir (5)" );
 					}
 					//UmamusumePrettyDerby caballos = new UmamusumePrettyDerby(usArray[i]);
 					 System.out.print("Introduzca numero correspondiente: ");
@@ -395,7 +397,7 @@ public class Interfaz {
 							Poker pachigada;
 							if(!multiplayer) {
 								UsuarioPk usPk = new UsuarioPk(usArray[i]);
-							pachigada = new Poker(usPk, null, multiplayer);	
+								pachigada = new Poker(usPk, null, multiplayer);	
 							} else {
 								UsuarioPk usPk = new UsuarioPk(usArray[i]);
 								UsuarioPk usPk2 = new UsuarioPk(usArray[i2]);
@@ -403,6 +405,10 @@ public class Interfaz {
 							}
 							break;
 					    case (3):
+					    	NegroJack blackjack;
+					    	blackjack = new NegroJack(usArray[i]);
+					    	break;
+					    case (4):
 					    		boolean mutl;
 					    if(multiplayer == false) {
 					    		do {
@@ -506,5 +512,5 @@ public class Interfaz {
 		}
 		} while(running);
 	}
-	
+
 }

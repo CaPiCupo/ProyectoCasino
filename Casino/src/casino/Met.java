@@ -25,9 +25,17 @@ public class Met {
             }
         }
     }
-    public void moverCursorInicio() {
+    public static void moverCursorInicio() {
         System.out.print("\r");
     }
+    
+    public static void empujarMucho() {
+    	for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+    	moverCursorInicio();
+    }
+    
     public long factorial(int n) {
         if (n < 0) {
             return 0;
