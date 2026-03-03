@@ -8,9 +8,11 @@ public class UsuarioPk {
     private Cartas[] cartas;
 	private BigDecimal valueF;
 	private BigDecimal valueP;
+	private BigDecimal stack;
 	private boolean allIn;
 	private boolean sidePot;
 	private boolean conDineroAun;
+	//private int id;
 	private int posicion;
 	private int calleAct;
 
@@ -98,7 +100,7 @@ public class UsuarioPk {
 	}
 
 	public boolean isConDineroAun() {
-		if(usuario.getDinero().compareTo(CERO) <= 0) {
+		if(stack.compareTo(CERO) <= 0) {
 		return false;
 		} else {
 		return conDineroAun;
@@ -116,5 +118,24 @@ public class UsuarioPk {
 	public void setPosicion(int posicion) {
 		this.posicion = posicion;
 	}
+
+	public BigDecimal getStack() {
+		return stack;
+	}
+
+	public void setStack(BigDecimal stack) {
+		this.stack = stack;
+	}
+
+	/*public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}*/
+	
+	
+	
 	
 }
