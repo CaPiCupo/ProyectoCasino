@@ -19,7 +19,6 @@ public class Jugador {
 	}
 
 	public PokerAI gAi() {
-		if()
 		return ai;
 	}
 
