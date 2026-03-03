@@ -2,7 +2,10 @@ package casino;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.math.RoundingMode;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Poker {
 	//JUEGO POKER MODALIDAD TEXAS HOLD'EM m
@@ -11,19 +14,26 @@ public class Poker {
 	private UsuarioPk us; 
 	private UsuarioPk us2;
 	private boolean multijugador;
+	static Jugador[] j = new Jugador[4];
 	static final int maxct = 52;
 	static Cartas[] ct = new Cartas[maxct];
 	static Scanner sc = new Scanner(System.in);
-	static ArrayList<Cartas> liCUs = new ArrayList<Cartas>();
+	static ArrayList<Cartas> liCUs = new ArrayList<Cartas>(); //Para Analizar
 	static ArrayList<Cartas> liCAi = new ArrayList<Cartas>();
 	static ArrayList<Cartas> liCTotal = new ArrayList<Cartas>();
+	static BigDecimal stack1;
+	static BigDecimal stack2;
+	static BigDecimal stack;
+	static String[] liCalle = {"PREFLOP", "FLOP", "TURN", "RIVER"};
+	static String[] liTipoAi = {"EarlyH2", "EarlyH1", "EarlyHB", "EarlyB1" ,"EarlyB2","TrueHB", "LateH2", "LateH1", "LateHB", "LateB1" ,"LateB2", "JCK"};
+	static String[] liNombreAi = {"Cashy MacMoneyFace", "Chris MoneyMaker","Quique", "Goku", "LeBrons", "La virgen Maria", "Rebeca Racañez", "Mario Hidalgo", "Ea Nasir", "Yakub", "Manny Heffley", "Super Bigote", "John Casino", "Gru", "Shrek", "Grug Crood", "El Lorax", "Balatro Balatrez", "Dr. Gregory House", "Media Docena de Minions", "Un tipo con un sombrero guay", "Hegel", "Teto Kasane", "Dos duendes en una gabardina", "3 puros y una persona", "Dinero Dinerez", "El preterito pluscuamperfecto", "Schopenhauer", "Subaru Estrella", "Mortadelo", "Sticky Joe", "El PIB de Haiti", "Señor Pink", "Mordekaiser", "D.B. Cooper"};
 	
 	public Poker (UsuarioPk us, UsuarioPk us2,/*Usuario us, Usuario us2,*/ boolean multijugador) {
 		this.us = us;
 		this.multijugador = multijugador;
 		this.us2 = us2;
 		
-		generarJugadores();
+
 		generarCarta();
 		juegodePoker();
 				
@@ -37,7 +47,12 @@ public class Poker {
 	        us.setAllIn(false);
 	        us.setSidePot(false);
 	        us.setCartas(new Cartas[2]);
-
+	        j[0] = new Jugador();
+	        j[0].sUs(us);
+	        j[0].sAi(null);
+	        j[0].sPos(0);
+			j[0].setTipo("us");
+	        
 	        if (multijugador && us2 != null) {
 	            us2.setConDineroAun(true);
 	            us2.setValueF(us2.getUsuario().getDinero());
@@ -46,8 +61,51 @@ public class Poker {
 	            us2.setAllIn(false);
 	            us2.setSidePot(false);
 	            us2.setCartas(new Cartas[2]);
+		        j[1] = new Jugador();
+		        j[1].sUs(us2);
+		        j[1].sAi(null);
+		        j[1].sPos(1);
+		        j[1].setTipo("us");
 	        }
-	    
+	}
+	
+	public void generarAI() {
+		PokerAI[] ai = new PokerAI[4];
+	    Random r = new Random();
+		if (multijugador && us2 != null) {
+			for(int i = 1; i < 4; ++i) {
+				ai[i] = new PokerAI();
+				ai[i].setTipoAI(liTipoAi[r.nextInt(liTipoAi.length)]);
+				ai[i].setNombreAI(liNombreAi[r.nextInt(liNombreAi.length)]);
+				ai[i].setCartas(new Cartas[2]);
+				ai[i].setDinero(stack.multiply(BigDecimal.valueOf(0.75f + r.nextFloat() * (0.50f))).setScale(0, RoundingMode.HALF_EVEN));
+				ai[i].setPosicion(i);
+				ai[i].setAllIn(false);
+				ai[i].setSidePot(false);
+		        j[i] = new Jugador();
+				j[i].sAi(ai[i]);
+				j[i].sUs(null);
+				j[i].sPos(i);
+				j[i].setTipo("ai");
+			}
+		} else {
+			for(int i = 2; i < 4; ++i) {
+				ai[i] = new PokerAI();
+				ai[i].setTipoAI(liTipoAi[r.nextInt(liTipoAi.length)]);
+				ai[i].setNombreAI(liNombreAi[r.nextInt(liNombreAi.length)]);
+				ai[i].setCartas(new Cartas[2]);
+				ai[i].setDinero(stack.multiply(BigDecimal.valueOf(0.75f + r.nextFloat() * (0.50f))).setScale(0, RoundingMode.HALF_EVEN));
+				ai[i].setPosicion(i);
+				ai[i].setAllIn(false);
+				ai[i].setSidePot(false);
+		        j[i] = new Jugador();
+				j[i].sAi(ai[i]);
+				j[i].sUs(null);
+				j[i].sPos(i);
+				j[i].setTipo("ai");
+			}
+		}
+		
 	}
 	public void generarCarta() {	
 		int i;
@@ -100,14 +158,36 @@ public class Poker {
 		}
 		
 	}
+
+	public static Cartas[] barajar(Cartas[] ct) {
+	    Random r = new Random();
+	    for (int i = ct.length - 1; i > 0; i--) {
+	        int j = r.nextInt(i + 1);
+
+	        Cartas x = ct[i];
+	        ct[i] = ct[j];
+	        ct[j] = x;
+	    }
+	    return ct;
+	}
 	
+	/*public BigDecimal mediarStack(BigDecimal st1, BigDecimal st2) {
+		if(!multijugador) {
+			return st1;
+		} else {
+			BigDecimal r;
+			return r.add((st1.add(st2)).divide(BigDecimal.TWO));
+		}
+	}*/
 	public static char identificarValor (ArrayList<Cartas> c) {
 		   
 		
 	}
 	
+	/**/
+	
 	public void juegodePoker() {
-		BigDecimal dnAct = us.getUsuario().getDinero();
+		Random r = new Random();
 
 		Met.empujarMucho();
 		boolean booPo;
@@ -140,29 +220,123 @@ public class Poker {
 				}			
 				System.out.println(
 						 "   -JUGAR (1)" +
-						 "\n   -Normas (2)" +
-						 "\n   -Salir (3)" 
+						 "\n   -Salir (2)"  
 						 );
 				System.out.print("\nIntroduzca numero correspondiente: ");
 				int resp = sc.nextInt();
-				/*System.out.println("\n");
-					boolean booresp;
-					do {
-						booresp = true;
-							switch (resp) {
-							case (3):
-								booresp = false;
+				System.out.println("\n");
+						switch (resp) {
+						case (1):
+/*		System.out.print("\nDINERO APUESTA: ");
+		int apuesta = sc.nextInt();
+		if (apuesta <= 0){
+		System.out.println("Apuesta invalida");
+		break;
+		} else if(us.getDinero().compareTo(new BigDecimal(apuesta)) < 0){
+		System.out.println("Falto de dinero");
+		break;
+		} else {
+		
+		System.out.println("");
+		BigDecimal ap = new BigDecimal(apuesta);
+		if(us.getTmEnDeuda() != -1) {
+		us.setTmEnDeuda(us.getTmEnDeuda() -1);
+		System.out.println("TURNOS DEUDA SOBRANTES: " + us.getTmEnDeuda());
+		}*/	
+						if(multijugador) {
+							System.out.print("\nFICHAS STACK JUGADOR 1: ");
+							int st = sc.nextInt();
+							if (st <= 0){
+								System.out.println("Apuesta invalida");
+								break;
+							} else if(us.getDinero().compareTo(new BigDecimal(st)) < 0){
+								System.out.println("Falto de dinero");
+								break;
+							} else {							
+								System.out.println("");
+								stack1 = BigDecimal.valueOf(st);
+								if(us.getUsuario().getTmEnDeuda() != -1) {
+								us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
+								System.out.println("TURNOS DEUDA SOBRANTES: " + us.getUsuario().getTmEnDeuda());
+								}
+							
+							System.out.print("\nFICHAS STACK JUGADOR 2: ");
+								int st2 = sc.nextInt();
+								if (st2 <= 0){
+									System.out.println("Apuesta invalida");
+									break;
+								} else if(us2.getDinero().compareTo(new BigDecimal(st2)) < 0){
+									System.out.println("Falto de dinero");
+									break;
+								} else {							
+									System.out.println("");
+									stack2 = BigDecimal.valueOf(st2);
+									if(us2.getUsuario().getTmEnDeuda() != -1) {
+									us2.getUsuario().setTmEnDeuda(us2.getUsuario().getTmEnDeuda() -1);
+									System.out.println("TURNOS DEUDA SOBRANTES: " + us2.getUsuario().getTmEnDeuda());
+									}
+								}
+								BigDecimal suma = stack1.add(stack2);
+								stack = suma.divide(BigDecimal.TWO);
+								}
+						} else {
+							System.out.print("\nFICHAS STACK: ");
+							int st = sc.nextInt();
+							if (st <= 0){
+								System.out.println("Apuesta invalida");
+								break;
+							} else if(us.getDinero().compareTo(new BigDecimal(st)) < 0){
+								System.out.println("Falto de dinero");
+								break;
+							} else {							
+								System.out.println("");
+								stack = BigDecimal.valueOf(st);
+								if(us.getUsuario().getTmEnDeuda() != -1) {
+								us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
+								System.out.println("TURNOS DEUDA SOBRANTES: " + us.getUsuario().getTmEnDeuda());
+								}
+							}
+							//stack.add(mediarStack(stack1, stack2));
+							System.out.println(stack);
+							generarJugadores();
+							generarAI();
+							Cartas[] CtUso = barajar(ct);
+							Cartas[] Ctcentro = new Cartas[5];
+							int prCiega = r.nextInt(4); //Quien empieza
+							int numpartidas = 0;
+							BigDecimal Pot;
+							if(!multijugador) {
+								boolean partida;
+								do {
+								partida = true;
+								int topeMazo = 0;
+								
+								int ronda = 0; //Preflop
+								for(int i = topeMazo; i<5; ++i) {
+									Ctcentro[i] = CtUso[i];	
+									Ctcentro[i].setOculto(false);
+									topeMazo++;
+								}
+								if(j[prCiega].getTipo().equals("us")) {
+									//BigDecimal ciega = new BigDecimal();
+								}
+								System.out.println("\n"
+										+ "----------------|" + liCalle[ronda] + "|----------------\n\n"
+										+ liCalle[ronda] +": " + Ctcentro[0].getCp() + "  " + Ctcentro[1].getCp() + "  " + Ctcentro[2].getCp() + "  " + Ctcentro[3].getCp() + "  " + Ctcentro[4].getCp() + "  "										
+										);
+								} while (partida);	
+							} else {
+								//BigDecimal dnAct2 = us2.getUsuario().getDinero();
+							}
 							break;
+						}
+						case (2):
+							booPo = false;
+						break;
 						default:
 							System.out.println("Caracter no encontrado");
-							booresp = false;
 						break;	
 						}
-					} while (booresp);
-		} while (booPo);*/
-		/*if(us.getUsuario().getUsuario().getTmEnDeuda() != -1){//us.getUsuario().setDeuda(us.getUsuario().getDeuda().subtract(new BigDecimal ("1")));
-		us.getUsuario().setTmEnDeuda(us.getUsuario().getUsuario().getTmEnDeuda() -1);
-		}*/
-		
+		} while (booPo);	
 	}
 }

@@ -6,6 +6,7 @@ public class PokerAI {
 	//AI para los juegadores del poker aaaa
 	//los
 	private String tipoAI;
+	private String nombreAI;
     private Cartas[] cartas;
 	private BigDecimal valueF;
 	private BigDecimal valueP;
@@ -110,11 +111,24 @@ public class PokerAI {
 	}
 
 	public boolean isConDineroAun() {
-		return conDineroAun;
+		if(dinero.compareTo(BigDecimal.ZERO) <= 0) {
+			return false;
+			} else {
+			return conDineroAun;
+			}
 	}
 
 	public void setConDineroAun(boolean conDineroAun) {
 		this.conDineroAun = conDineroAun;
 	}
+
+	public String getNombreAI() {
+		return nombreAI;
+	}
+
+	public void setNombreAI(String nombreAI) {
+		this.nombreAI = nombreAI;
+	}
+	
 	
 }

@@ -98,7 +98,11 @@ public class UsuarioPk {
 	}
 
 	public boolean isConDineroAun() {
+		if(usuario.getDinero().compareTo(CERO) <= 0) {
+		return false;
+		} else {
 		return conDineroAun;
+		}
 	}
 
 	public void setConDineroAun(boolean conDineroAun) {
