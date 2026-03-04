@@ -55,6 +55,9 @@ public class PokerAI {
 	}
 
 	public BigDecimal getDinero() {
+		if(dinero.compareTo(BigDecimal.ZERO) < 0) {
+			dinero = BigDecimal.ZERO;	
+	}
 		return dinero;
 	}
 

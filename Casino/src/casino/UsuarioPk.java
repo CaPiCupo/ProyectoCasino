@@ -120,9 +120,13 @@ public class UsuarioPk {
 	}
 
 	public BigDecimal getStack() {
+	if(stack.compareTo(CERO) < 0) {
+			stack = CERO;
+			conDineroAun = false;
+		} 
 		return stack;
 	}
-
+	
 	public void setStack(BigDecimal stack) {
 		this.stack = stack;
 	}

@@ -36,6 +36,14 @@ public class Met {
     	moverCursorInicio();
     }
     
+    public static void esperar2seg() {
+    	try {
+    	    Thread.sleep(2000);
+    	} catch (InterruptedException e) {
+    	    Thread.currentThread().interrupt();
+    	}
+    }
+    
     public long factorial(int n) {
         if (n < 0) {
             return 0;

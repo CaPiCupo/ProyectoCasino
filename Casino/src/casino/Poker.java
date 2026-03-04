@@ -26,7 +26,7 @@ public class Poker {
 	static BigDecimal stack;
 	static String[] liCalle = {"PREFLOP", "FLOP", "TURN", "RIVER"};
 	static String[] liTipoAi = {"EarlyH2", "EarlyH1", "EarlyHB", "EarlyB1" ,"EarlyB2","TrueHB", "LateH2", "LateH1", "LateHB", "LateB1" ,"LateB2", "JCK"};
-	static String[] liNombreAi = {"Cashy MacMoneyFace", "Chris MoneyMaker","Quique", "Goku", "LeBrons", "La virgen Maria", "Rebeca Racañez", "Mario Hidalgo", "Ea Nasir", "Yakub", "Manny Heffley", "Super Bigote", "John Casino", "Gru", "Shrek", "Grug Crood", "El Lorax", "Balatro Balatrez", "Dr. Gregory House", "Media Docena de Minions", "Un tipo con un sombrero guay", "Hegel", "Teto Kasane", "Dos duendes en una gabardina", "3 puros y una persona", "Dinero Dinerez", "El preterito pluscuamperfecto", "Schopenhauer", "Subaru Estrella", "Mortadelo", "Sticky Joe", "El PIB de Haiti", "Señor Pink", "Mordekaiser", "D.B. Cooper","Hornet","Sheldon l.cooper","Kike","Quike","Kique", "Opsie! All Aces"};
+	static String[] liNombreAi = {"Cashy MacMoneyFace", "Chris MoneyMaker", "Trabajador de cuello azul", "Casado con los ahorros", "Un pensionista", "Quique", "Goku", "LeBrons", "La virgen Maria", "Rebeca Racañez", "Mario Hidalgo", "Ea Nasir", "Yakub", "Abraxas", "Manny Heffley", "Super Bigote", "John Casino", "Gru", "Shrek", "Grug Crood", "El Lorax", "Balatro Balatrez", "Dr. Gregory House", "Media Docena de Minions", "Un tipo con un sombrero guay", "Hegel", "Teto Kasane", "Dos duendes en una gabardina", "3 puros y una persona", "Dinero Dinerez", "El preterito pluscuamperfecto", "Schopenhauer", "Subaru Estrella", "Mortadelo", "Sticky Joe", "El PIB de Haiti", "Apple Jack", "Un chino", "Hideo Kojima", "Señor Pink", "Mordekaiser", "D.B. Cooper","Hornet", "Fishy ahh looking person" , "Therian de un pez gota", "THE CEO MINDSET", "Sheldon l.cooper","Kike","Quike","Kique", "Opsie! All Aces"};
 	
 	public Poker (UsuarioPk us, UsuarioPk us2,/*Usuario us, Usuario us2,*/ boolean multijugador) {
 		this.us = us;
@@ -313,8 +313,15 @@ public class Poker {
 								do {
 									booRn = true;
 									
-									System.out.println("\n----------|NUEVA MESA|----------\n");
-									//
+									System.out.println("\n----------|NUEVA MESA|----------");
+									System.out.println("OPONENTES");
+									//MOSTRAR OPONENTES
+									for(int i = 0; i<j.length; ++i) {
+										if(j[i].getTipo().equals("ai")) {
+											System.out.println("Jugador: " + j[i].gAi().getNombreAI() + "  Stack: " + j[i].gAi().getDinero() + " fichas");
+											/*AQUI IRIA UN MENSAJITO SOBRE LA PERSONALIDAD*/
+										}
+									}
 									Cartas[] CtUso = barajar(ct);
 									Cartas[] Ctcentro = new Cartas[5];
 									BigDecimal Ciega = new BigDecimal("0");
@@ -365,6 +372,11 @@ public class Poker {
 												);
 										int xJug = prCiega;
 										int fin = 0;
+										int apuestaCalle = 0;
+										boolean pagarCiega = false;
+										if(ronda == 0) {
+											pagarCiega = true;
+										}
 										boolean booAp;
 										do {
 											booAp = true;
@@ -372,14 +384,15 @@ public class Poker {
 												System.out.println("--- Jugador " + j[xJug].gUs().getUsuario().getNombre() + " ---");
 												System.out.println("Stack: " + j[xJug].gUs().getStack() + " fichas");
 												//CIEGA
-												if(ronda == 0 && xJug == prCiega) {
+												if(pagarCiega && xJug == prCiega) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
 													j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(smallBlind));
-												} else if(ronda == 0 && xJug== (prCiega + 1) % j.length) {
-													//POR ALGUN MOTIVO NO APARACE
+													apuestaCalle += smallBlind.intValue();
+												} else if(pagarCiega && xJug== (prCiega + 1) % j.length) {
 														System.out.println("CIEGA GRANDE: " + Ciega );	
 														j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(Ciega));
+														apuestaCalle += Ciega.intValue();
 												} 
 												Cartas[] cUs = j[xJug].gUs().getCartas();
 												System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp());
@@ -388,13 +401,15 @@ public class Poker {
 												System.out.println("--- Jugador " + j[xJug].gAi().getNombreAI() + " ---");
 												System.out.println("Stack: " + j[xJug].gAi().getDinero() + " fichas");
 												//CIEGA
-												if(ronda == 0 && xJug == prCiega) {
+												if(pagarCiega && xJug == prCiega) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
 													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(smallBlind));
-												} else if(ronda == 0 && xJug== (prCiega + 1) % j.length) {
+													apuestaCalle += smallBlind.intValue();
+												} else if(pagarCiega && xJug == (prCiega + 1) % j.length) {
 													System.out.println("CIEGA GRANDE: " + Ciega );	
-													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(Ciega));												
+													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(Ciega));	
+													apuestaCalle += Ciega.intValue();
 												}
 												Cartas[] cUs = j[xJug].gAi().getCartas();
 												System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp());
@@ -402,6 +417,8 @@ public class Poker {
 											}
 											
 											xJug = (xJug + 1) % j.length;
+											Pot = Pot.add(new BigDecimal(apuestaCalle));
+											//TEMPORAL
 											++fin;
 											if(fin >= j.length) {
 												booAp = false;
@@ -427,9 +444,15 @@ public class Poker {
 									}
 									} while (calleActiva);
 									prCiega = (prCiega + 1) % j.length;
+									
+									++caca;
+									if(caca == 10) {
+										partida = false;
+										booRn = false;
+									}
 								} while (booRn);
 								
-								
+								//SOLO PARA PRUEBAS
 								++caca;
 								if(caca == 10) {
 									partida = false;
