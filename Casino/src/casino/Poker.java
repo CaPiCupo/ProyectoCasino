@@ -372,11 +372,11 @@ public class Poker {
 												System.out.println("--- Jugador " + j[xJug].gUs().getUsuario().getNombre() + " ---");
 												System.out.println("Stack: " + j[xJug].gUs().getStack() + " fichas");
 												//CIEGA
-												if(ronda == 0 && xJug == 0) {
+												if(ronda == 0 && xJug == prCiega) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
 													j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(smallBlind));
-												} else if(ronda == 0 && xJug == 1) {
+												} else if(ronda == 0 && xJug== (prCiega + 1) % j.length) {
 													//POR ALGUN MOTIVO NO APARACE
 														System.out.println("CIEGA GRANDE: " + Ciega );	
 														j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(Ciega));
@@ -388,11 +388,11 @@ public class Poker {
 												System.out.println("--- Jugador " + j[xJug].gAi().getNombreAI() + " ---");
 												System.out.println("Stack: " + j[xJug].gAi().getDinero() + " fichas");
 												//CIEGA
-												if(ronda == 0 && xJug == 0) {
+												if(ronda == 0 && xJug == prCiega) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
 													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(smallBlind));
-												} else if(ronda == 0 && xJug == 1) {
+												} else if(ronda == 0 && xJug== (prCiega + 1) % j.length) {
 													System.out.println("CIEGA GRANDE: " + Ciega );	
 													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(Ciega));												
 												}
@@ -426,9 +426,10 @@ public class Poker {
 									break;
 									}
 									} while (calleActiva);
+									prCiega = (prCiega + 1) % j.length;
 								} while (booRn);
 								
-								prCiega = (prCiega + 1) % j.length;
+								
 								++caca;
 								if(caca == 10) {
 									partida = false;
