@@ -244,6 +244,7 @@ public class Poker {
 		us.setTmEnDeuda(us.getTmEnDeuda() -1);
 		System.out.println("TURNOS DEUDA SOBRANTES: " + us.getTmEnDeuda());
 		}*/	
+						int caca = 0;
 						if(multijugador) {
 							System.out.print("FICHAS STACK JUGADOR 1: ");
 							int st = sc.nextInt();
@@ -303,20 +304,24 @@ public class Poker {
 						}
 							//stack.add(mediarStack(stack1, stack2));
 							boolean partida;
-							do {	
-							Cartas[] CtUso = barajar(ct);
-							Cartas[] Ctcentro = new Cartas[5];
-							generarAI();
-							int prCiega = r.nextInt(4); //Quien empieza
-							int numpartidas = 0;
-							BigDecimal Ciega = new BigDecimal("0");
-							BigDecimal Pot = new BigDecimal("0");
-						/*	if(!multijugador) {*/
-								
-									partida = true;
+							do {
+								partida = true;
+								generarAI();
+								boolean booRn;
+								int prCiega = r.nextInt(4); //Quien empieza
+								//boolean booGuardar = true;
+								do {
+									booRn = true;
+									
+									System.out.println("\n----------|NUEVA MESA|----------\n");
+									//
+									Cartas[] CtUso = barajar(ct);
+									Cartas[] Ctcentro = new Cartas[5];
+									BigDecimal Ciega = new BigDecimal("0");
+									BigDecimal Pot = new BigDecimal("0");
 									int topeMazo = 0;
-									int xtopMazo;
 									int ronda = 0; //Preflop
+									//DAR CARTAS
 									for(int i = topeMazo; i<5; ++i) {
 										Ctcentro[i] = CtUso[i];	
 										Ctcentro[i].setOculto(true);
@@ -339,21 +344,20 @@ public class Poker {
 												c[0].setOculto(true);
 												c[1] = CtUso[++topeMazo];
 												c[1].setOculto(true);
-												j[i].gAi().setCartas(c);
-											
-											
+												j[i].gAi().setCartas(c);	
 										}
 									}
-									
+									//GENERAR CIEGA
 									if(j[prCiega].getTipo().equals("us")) {
-										//FALLA AL STACK
-										Ciega = j[prCiega].gUs().getStack().multiply(new BigDecimal("0.05").setScale(0 , RoundingMode.CEILING));
+										Ciega = j[prCiega].gUs().getStack().multiply(new BigDecimal("0.05"));
 									} else if(j[prCiega].getTipo().equals("ai")) {
-										Ciega = j[prCiega].gAi().getDinero().multiply(new BigDecimal("0.05").setScale(0 , RoundingMode.CEILING));
+										Ciega = j[prCiega].gAi().getDinero().multiply(new BigDecimal("0.05"));
 									}
-									boolean booRn;
+									Ciega = Ciega.setScale(0, RoundingMode.HALF_EVEN);
+									//
+									boolean calleActiva = true;
 									do {
-										booRn = true;
+										System.out.println(ronda);
 										System.out.println("\n"
 												+ "----------------|" + liCalle[ronda] + "|----------------\n"
 												+ "Pot: " + Pot + " $\n"
@@ -365,29 +369,30 @@ public class Poker {
 										do {
 											booAp = true;
 											if(j[xJug].getTipo().equals("us")) {
-												System.out.println("Jugador " + j[xJug].gUs().getUsuario().getNombre());
+												System.out.println("--- Jugador " + j[xJug].gUs().getUsuario().getNombre() + " ---");
 												System.out.println("Stack: " + j[xJug].gUs().getStack() + " fichas");
 												//CIEGA
-												if(ronda == 0 && xJug == prCiega) {
+												if(ronda == 0 && xJug == 0) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
 													j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(smallBlind));
-												} else if(ronda == 0 && xJug == (prCiega + 1)) {
-													System.out.println("CIEGA GRANDE: " + Ciega );	
-													j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(Ciega));
+												} else if(ronda == 0 && xJug == 1) {
+													//POR ALGUN MOTIVO NO APARACE
+														System.out.println("CIEGA GRANDE: " + Ciega );	
+														j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(Ciega));
 												} 
 												Cartas[] cUs = j[xJug].gUs().getCartas();
 												System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp());
 												
 											} else if(j[xJug].getTipo().equals("ai")) {
-												System.out.println("Jugador " + j[xJug].gAi().getNombreAI());
+												System.out.println("--- Jugador " + j[xJug].gAi().getNombreAI() + " ---");
 												System.out.println("Stack: " + j[xJug].gAi().getDinero() + " fichas");
 												//CIEGA
-												if(ronda == 0 && xJug == prCiega) {
+												if(ronda == 0 && xJug == 0) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
 													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(smallBlind));
-												} else if(ronda == 0 && xJug == (prCiega + 1)) {
+												} else if(ronda == 0 && xJug == 1) {
 													System.out.println("CIEGA GRANDE: " + Ciega );	
 													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(Ciega));												
 												}
@@ -396,14 +401,11 @@ public class Poker {
 												
 											}
 											
-										++xJug;
-										++fin;
-										if(xJug >= 4) {
-											xJug = 0;
-										}
-										if(fin == 4) {
-											booAp = false;
-										}
+											xJug = (xJug + 1) % j.length;
+											++fin;
+											if(fin >= j.length) {
+												booAp = false;
+											}
 										} while (booAp);
 									ronda++;
 									switch(ronda) {
@@ -420,10 +422,17 @@ public class Poker {
 									break;
 									case(4):
 										System.out.println("Fin de la Partida");
-										System.out.println();
+										calleActiva = false;
+									break;
 									}
+									} while (calleActiva);
 								} while (booRn);
 								
+								prCiega = (prCiega + 1) % j.length;
+								++caca;
+								if(caca == 10) {
+									partida = false;
+								}
 							} while (partida);	
 							/*} else {
 								//BigDecimal dnAct2 = us2.getUsuario().getDinero();
