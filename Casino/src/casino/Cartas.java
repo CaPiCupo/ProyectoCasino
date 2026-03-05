@@ -15,11 +15,11 @@ public class Cartas {
 	public Cartas() {
 	}
 	
-	public Cartas(int numero1, String color) {
-		this.numero1 = numero1;
-		this.color = color;			
-	}
-	
+	public Cartas(int numero1, String numero, String color) {
+        this.numero1 = numero1;
+        this.numero = numero;
+        this.color = color;
+    }
 	
 	public int getNumero1() {
 		return numero1;
@@ -78,7 +78,10 @@ public class Cartas {
 		this.oculto = oculto;
 	}
 	
-	
+	//COSO RICARDO
+	public String mostrar() {
+        return numero + color;
+    }
 	
 	
 }

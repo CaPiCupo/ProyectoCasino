@@ -11,7 +11,7 @@ public class Usuario {
 	private boolean usoPromocion;
 	private int usoBanco;
 	private int tmEnDeuda;
-	
+
 	public Usuario() {
 	}
 	
@@ -91,6 +91,11 @@ public class Usuario {
 			this.tmEnDeuda = tmEnDeuda;
 		}
 	}
+	
+	//COSO RICARDO
+	public boolean tieneDineroSuficiente(BigDecimal cantidad) {
+        return dinero.compareTo(cantidad) >= 0;
+    }
 	
    
 

@@ -378,8 +378,9 @@ public class Interfaz {
 								 "\n   -Apuestas de Caballos (1)" +	
 								 "\n   -Poker (2)" +	
 								 "\n   -BlackJack (3)" +
-								 "\n   -ACTIVAR MULTIJUGADOR (4)" +	
-								 "\n   -Salir (5)" );
+								 "\n   -Subasta Cartas (4)"	+
+								 "\n   -ACTIVAR MULTIJUGADOR (5)" +	
+								 "\n   -Salir (6)" );
 					}
 					//UmamusumePrettyDerby caballos = new UmamusumePrettyDerby(usArray[i]);
 					 System.out.print("Introduzca numero correspondiente: ");
@@ -408,7 +409,10 @@ public class Interfaz {
 					    	NegroJack blackjack;
 					    	blackjack = new NegroJack(usArray[i]);
 					    	break;
-					    case (4):
+					    case(4):
+					    	SubastaCartas.jugarSubasta(usArray[i]);
+					    	break;
+					    case (5):
 					    		boolean mutl;
 					    if(multiplayer == false) {
 					    		do {
