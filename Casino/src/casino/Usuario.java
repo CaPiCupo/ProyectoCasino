@@ -35,7 +35,6 @@ public class Usuario {
 	}
 
 	public void setDinero(BigDecimal dinero) {
-		System.out.println(tmEnDeuda);
 		if (tmEnDeuda == 0 && dinero.compareTo(CERO) > 0) {
 			System.out.println("\nSe te acabo el tiempo para dar el dinero \n");
 			this.dinero = dinero.subtract(deuda);
@@ -78,7 +77,7 @@ public class Usuario {
 	}
 
 	public void setTmEnDeuda(int tmEnDeuda) {
-		if(dinero.compareTo(CERO) < 0) {
+		if(dinero != null && dinero.compareTo(CERO) < 0) {
 			this.tmEnDeuda = 0;
 			return;
 		}  

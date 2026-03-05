@@ -23,8 +23,8 @@ public class SubastaCartas {
 			Usuario ia = new Usuario();
 			ia.setNombre("RivalIA");
 			ia.setDeuda(new BigDecimal("0"));
-			ia.setDinero(new BigDecimal("100"));
 			ia.setTmEnDeuda(-1);
+			ia.setDinero(new BigDecimal("100"));
 			
 
 			UsuarioSubasta j1 = new UsuarioSubasta(uB);
