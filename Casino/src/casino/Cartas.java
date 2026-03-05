@@ -5,6 +5,7 @@ import java.math.BigDecimal; //Puto double
 public class Cartas {
 
 	private String numero;
+	private int numero1;
 	private String color;
 	//private String cp; Carta Completa
 	private BigDecimal valor;
@@ -12,6 +13,20 @@ public class Cartas {
 	private boolean pokerBlackjack;
 	
 	public Cartas() {
+	}
+	
+	public Cartas(int numero1, String color) {
+		this.numero1 = numero1;
+		this.color = color;			
+	}
+	
+	
+	public int getNumero1() {
+		return numero1;
+	}
+
+	public void setNumero1(int numero1) {
+		this.numero1 = numero1;
 	}
 
 	public String getNumero() {
