@@ -9,7 +9,6 @@ public class UsuarioPk {
 	private BigDecimal valueF;
 	private BigDecimal valueP;
 	private BigDecimal stack;
-	private boolean allIn;
 	private boolean sidePot;
 	private boolean conDineroAun;
 	//private int id;
@@ -24,7 +23,6 @@ public class UsuarioPk {
         this.cartas = new Cartas[2];
         this.valueF = CERO;
         this.valueP = CERO;
-        this.allIn = false;
         this.sidePot = false;
         this.conDineroAun = true;
         this.posicion = 0;
@@ -61,14 +59,6 @@ public class UsuarioPk {
 
 	public void setValueP(BigDecimal valueP) {
 		this.valueP = valueP;
-	}
-
-	public boolean isAllIn() {
-		return allIn;
-	}
-
-	public void setAllIn(boolean allIn) {
-		this.allIn = allIn;
 	}
 
 	public boolean isSidePot() {

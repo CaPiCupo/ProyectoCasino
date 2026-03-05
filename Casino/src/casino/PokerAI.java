@@ -15,7 +15,6 @@ public class PokerAI {
 	private int calleAct;
 	private int posicion;
 	private boolean multijugador;
-	private boolean allIn;
 	private boolean sidePot;
 	private boolean conDineroAun;
 	
@@ -95,14 +94,6 @@ public class PokerAI {
 
 	public void setPosicion(int posicion) {
 		this.posicion = posicion;
-	}
-
-	public boolean isAllIn() {
-		return allIn;
-	}
-
-	public void setAllIn(boolean allIn) {
-		this.allIn = allIn;
 	}
 
 	public boolean isSidePot() {
