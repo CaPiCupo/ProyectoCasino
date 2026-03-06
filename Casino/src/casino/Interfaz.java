@@ -380,7 +380,8 @@ public class Interfaz {
 								 "\n   -BlackJack (3)" +
 								 "\n   -Subasta Cartas (4)"	+
 								 "\n   -ACTIVAR MULTIJUGADOR (5)" +	
-								 "\n   -Salir (6)" );
+								 "\n   -Salir (6)" +
+								 "\n");
 					}
 					//UmamusumePrettyDerby caballos = new UmamusumePrettyDerby(usArray[i]);
 					 System.out.print("Introduzca numero correspondiente: ");

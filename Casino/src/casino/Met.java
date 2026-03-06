@@ -36,9 +36,9 @@ public class Met {
     	moverCursorInicio();
     }
     
-    public static void esperar2seg() {
+    public static void esperarSeg(int t) {
     	try {
-    	    Thread.sleep(2000);
+    	    Thread.sleep(t);
     	} catch (InterruptedException e) {
     	    Thread.currentThread().interrupt();
     	}
