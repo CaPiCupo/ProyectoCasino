@@ -406,4 +406,3 @@ public class SubastaCartas {
         } catch (InterruptedException e) {}
     }
 	}
-

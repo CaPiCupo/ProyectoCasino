@@ -1,7 +1,12 @@
 //Blee 
 package casino;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.math.BigDecimal;
 
 public class Interfaz {
@@ -29,6 +34,7 @@ public class Interfaz {
 		i = 0; //Inicie con el primer usuario de los 4
 		boolean multiplayer = false; //Si es mucha tela se quita
 		int i2 = -1; //Para probar si el multijugador es buena idea
+		Set<String> setNombresCreditos = new HashSet<>();
 		boolean running;
 		boolean playing;
 		boolean boo;
@@ -136,6 +142,7 @@ public class Interfaz {
 					 //Multijugador??
 					 );
 			System.out.print("\nIntroduzca numero correspondiente: ");
+			sc.nextLine();
 			int resp = sc.nextInt();
 			System.out.println("\n");
 				switch (resp) {
@@ -389,12 +396,9 @@ public class Interfaz {
 					    switch (respOp3) {
 					    case (1): 
 					    		UmamusumePrettyDerby caballos;
-							if(!multiplayer) {
-								caballos = new UmamusumePrettyDerby(usArray[i], null, multiplayer);	
-							} else {
-								caballos = new UmamusumePrettyDerby(usArray[i], usArray[i2], multiplayer);	
-							}
-							break;
+								caballos = new UmamusumePrettyDerby(usArray[i]);
+								Met.esperarSeg(5000);
+								break;
 					    case (2):
 							Poker pachigada;
 							if(!multiplayer) {
@@ -415,6 +419,7 @@ public class Interfaz {
 					    	break;
 					    case (5):
 					    		boolean mutl;
+					    	
 					    if(multiplayer == false) {
 					    		do {
 					    		mutl = true;
@@ -505,6 +510,22 @@ public class Interfaz {
 					 */
 				break;
 				}
+			    break;
+				case(4): 
+					Collections.addAll(setNombresCreditos,
+					        "Mario Hidalgo Rodriguez Cruz",
+					        "Ricardo Fernando Raymundo Saldaña ",				 
+					        "Pedro Manuel Maqueda Diaz"
+					        );
+				List<String> lista = new ArrayList<>(setNombresCreditos);
+				System.out.println(lista.get(0) + ": Interfaz, Carrera Caballos y Poker");
+				System.out.println(lista.get(1) + ": Subasta Cartas");
+				System.out.println(lista.get(2) + ": BlackJack");
+				System.out.println("\nGRACIAS POR DISFRUTAS DE LOS FRUTOS DE ESTE PROYECTO :)");
+				break;
+				case(5):
+					running = false;
+				break;
 			}
 				
 
@@ -516,6 +537,7 @@ public class Interfaz {
 			running = false;
 		}
 		} while(running);
+		System.out.println("\n\nSaliendo del Casino");
 	}
 
 }
