@@ -2,6 +2,8 @@ package casino;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.math.RoundingMode;
 import java.util.Scanner;
 import java.util.Set;
@@ -13,7 +15,8 @@ public class Poker {
 	//private Usuario us2;
 	/* TODO --- LIST
 	 * Mirar el check para quienes pagaron la ciega y fueron igualados - HECHO (CREO)
-	 * Poner modo sin ai para probar el funciones BOOCACA quitar AL ENTREGA 
+	 * Poner modo sin ai para probar el funciones BOOCACA quitar AL ENTREGA - YA NO IMPORTA
+	 * ARREGLAR CIEGA GRANDE PARA QUE PUEDA JUGAR TRAS QUE LE IGUALEN LA CIEGA
 	 * ARREGLAR EL BOOLEAN QUE ESCONDE LAS CARTAS (tambien falla en el ALL IN)
 	 * 
 	 */
@@ -174,14 +177,94 @@ public class Poker {
 	    return ct;
 	}
 	
-	/*public BigDecimal mediarStack(BigDecimal st1, BigDecimal st2) {
-		if(!multijugador) {
-			return st1;
-		} else {
-			BigDecimal r;
-			return r.add((st1.add(st2)).divide(BigDecimal.TWO));
+	public int calcularGanadorEntre(List<Integer> jugadores, Cartas[] ctCentro){
+
+	    int xJugMejor = jugadores.get(0);
+
+	    for(int i : jugadores){
+
+	        if(esIGanador(i, xJugMejor, ctCentro)){
+	        	xJugMejor = i;
+	        }
+	    }
+
+	    return xJugMejor;
+	}
+	
+	public boolean esIGanador(int indexNuevo, int indexGanador, Cartas[] ctCentro) {
+		if(identificarMano(indexNuevo, ctCentro) == identificarMano(indexGanador, ctCentro)) {
+			//TODO EMPATE REPARTIR EL POT CORRESPONDIENTE POR LA MITAD
 		}
-	}*/
+	}
+	
+	public int identificarMano(int xJug, Cartas[] ctCentro) {
+		Cartas[] ctJug;
+		if(j[xJug].getTipo().equals("us")) {
+			ctJug = j[xJug].gUs().getCartas();
+		} else {
+			ctJug = j[xJug].gAi().getCartas();
+		}
+		int mano = 0;
+		//TODO
+		/* SI VOY A COMPARAR UN INT IMPORTANTE QUE EL VALOR DE LAS CARTAS NO PUEDAN SUMAR HASTA LLEGAR A OTRA MANO
+		 * EJEMPLO: SI ES PAR mano += 1000; que sean los millares lo que marquen la mano; (9000 desde la escarera de color a 0000 de la carta unica)
+		 * 
+		 * */
+	}
+	/**
+	 * Hace que funcione esto
+	 * @return
+	 */
+	public List<Pot> calcularPots() {
+
+	    List<BigDecimal> apuestas = new ArrayList<>();
+	    
+	    for(int i = 0; i < j.length; i++){
+	       // if(!j[i].isActionFoldeo()){ PORQUE???? MARIO DEL PASADO PAYASO
+	            apuestas.add(new BigDecimal(j[i].getApuesta()));
+	        //}
+	    }
+
+	    Collections.sort(apuestas);
+
+	    List<Pot> pots = new ArrayList<>();
+
+	    BigDecimal nivelAnterior = BigDecimal.ZERO;
+
+	    for(int i = 0; i < apuestas.size(); i++){
+
+	        BigDecimal nivelActual = apuestas.get(i);
+	        BigDecimal diferencia = nivelActual.subtract(nivelAnterior);
+
+	        if(diferencia.compareTo(BigDecimal.ZERO) > 0){
+
+	            List<Integer> jugadoresPot = new ArrayList<>();
+	            
+	            /**TODO
+	             * QUIZA ESTO && new BigDecimal(j[k].getApuesta()).compareTo(nivelActual) >= 0 SEA UNA MALA IDEA 
+	             * LOS POTS DEBEN DE FUNCIONAR ASI
+	             * PACO: 10 ALL IN; PABLO (GANA): 20 ALL IN; PAULO: 50 ALL IN; POL: 50 IGUALA
+	             * PACO -10
+	             * PABLO: SOLO GANA EL POT1 Y EL POT 2: +40 POT 1 Y MAS +60 POT 2 (TOTAL 100)
+	             * PAULO SOLO PIERDE EL POT 1 Y 2:  -20 Y GANA DEVUELTA LOS +30
+	             * POL LO MISMO QUE PAULO: -2O (SE QUEDA CON 30)
+	             *
+	             */
+	            for(int k = 0; k < j.length; k++){
+	                if(!j[k].isActionFoldeo() && new BigDecimal(j[k].getApuesta()).compareTo(nivelActual) >= 0){
+	                    jugadoresPot.add(k);
+	                }
+	            }
+	            BigDecimal pot = diferencia.multiply(new BigDecimal(jugadoresPot.size()));
+	            pots.add(new Pot(pot, jugadoresPot));
+	        }
+
+	        nivelAnterior = nivelActual;
+	    }
+
+	    return pots;
+	}
+	
 	public void comprobarAllIn(int xJug, Cartas[] c) {
 		
 	    if (j[xJug].getTipo().equals("us")) {
@@ -245,10 +328,10 @@ public class Poker {
 	}
 	
 	
-	public static char identificarValor () {
+	/* TODO public static char identificarValor () {
 		   
 		
-	}
+	}*/
 	
 	public static void optionPokerUs (int resp, int xJug, Cartas[] c) {
 		
@@ -315,7 +398,6 @@ public class Poker {
 
 		Met.empujarMucho();
 		boolean booPo;
-		boolean boocaca = true;
 		do {
 
 			booPo = false;
@@ -379,9 +461,8 @@ public class Poker {
 							do {
 								partida = true;
 
-								if(boocaca) {
+
 								generarAI();
-								}
 								int prCiega = r.nextInt(4); //Quien empieza
 								System.out.println("\n----------|NUEVA MESA|----------");
 								System.out.println("OPONENTES");
@@ -448,6 +529,7 @@ public class Poker {
 									for(int i = 0; i<j.length; i++) {
 										j[i].setActionFoldeo(false);
 										j[i].setActionAllIn(false);
+										j[i].setActionPagoCiegaGrande(false);
 										j[i].setApuesta(0);
 									}
 									//SE JUEGA LAS RONDAS
@@ -508,6 +590,7 @@ public class Poker {
 														potCalle += Ciega.intValue();
 														apuestaCalle = Ciega.intValue();
 														j[xJug].setApuesta(j[xJug].getApuesta() + Ciega.intValue());
+														j[xJug].setActionPagoCiegaGrande(true);
 														//mainPot = mainPot.add(Ciega);
 														pagarCiegaGrande = false;
 														
@@ -542,28 +625,43 @@ public class Poker {
 														} else {
 															if(minApuesta == 0) {
 																System.out.println("(2) Check" + "\n(3) Subir");
-															} else {
+															} else if(minApuesta >= j[xJug].gUs().getStack().intValue()) {
+																System.out.println("(2) Igualar || ALL IN ||");																
+															}else {
 																System.out.println("(2) Igualar || " + minApuesta + " FICHAS ||" + "\n(3) Subir");
 															}
 														}
 														if(multijugador) {
+															if(minApuesta >= j[xJug].gUs().getStack().intValue()) {
+																System.out.println("(3) Ver Mano - Solo Multijugador");
+																System.out.println("(4) VISOR DATOS");														
+															} else {
 															System.out.println("(4) Ver Mano - Solo Multijugador");
 															System.out.println("(5) VISOR DATOS");
 															//resp1 += 20;
+															}
 														} else {
-															System.out.println("(4) VISOR DATOS");
+															if(minApuesta >= j[xJug].gUs().getStack().intValue()) {
+																System.out.println("(3) VISOR DATOS");														
+															} else {
+																System.out.println("(4) VISOR DATOS");
+															}
 														}
 														System.out.print("\nIntroduzca numero correspondiente: ");
 														int respUs = sc.nextInt();
 														System.out.println();
+														
+														if(minApuesta >= j[xJug].gUs().getStack().intValue()) {
+															respUs += 10;
+														}
 														//resp1 += respUs;
 													
 														//optionPokerUs(resp1, xJug, cUs);
 														switch(respUs) {
-													    case 1: //FOLD
+													    case 1, 11: //FOLD
 													    	j[xJug].setActionFoldeo(true);
 													        break;
-													    case 2:
+													    case 2, 12:
 													        if(checkAvairable){
 													            //CHECK
 													        	j[xJug].setActionCheckIgualar(true);
@@ -580,11 +678,20 @@ public class Poker {
 																		System.out.println("" +
 																				"\nANALIZANDO DINERO EN LA CUENTA"
 																				);*/
-													        	j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(new BigDecimal(minApuesta)));
-											        	        potCalle += minApuesta;
-											        	        j[xJug].setApuesta(j[xJug].getApuesta() + minApuesta);
-													        	j[xJug].setActionCheckIgualar(true);
-											        	        checkAvairable = false;													            
+																if(minApuesta >= j[xJug].gUs().getStack().intValue()) {
+													        	    potCalle += j[xJug].gUs().getStack().intValue();
+												        	        apuestaCalle = j[xJug].gUs().getStack().intValue();
+													        	    j[xJug].setApuesta(j[xJug].getApuesta() + j[xJug].gUs().getStack().intValue());
+													        	    j[xJug].gUs().setStack(BigDecimal.ZERO);
+													        	    j[xJug].setActionAllIn(true);
+													        	    checkAvairable = false;
+																} else {	
+																	j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(new BigDecimal(minApuesta)));
+												        	        potCalle += minApuesta;
+												        	        j[xJug].setApuesta(j[xJug].getApuesta() + minApuesta);
+												        	        j[xJug].setActionCheckIgualar(true);
+												        	        checkAvairable = false;			
+																}
 													        }
 													        break;
 													    case 3:
@@ -678,7 +785,7 @@ public class Poker {
 													        }
 													        System.out.println("");
 													        break;
-													    case 4:
+													    case 4, 13:
 													        if(multijugador){
 													            //VER MANO
 													        	cUs[0].setOculto(false);
@@ -695,7 +802,7 @@ public class Poker {
 													            //VISOR DATOS
 													        }
 													        break;
-													    case 5:
+													    case 5, 14:
 													        if(multijugador){
 													            //VISOR DATOS
 													        }
@@ -732,6 +839,7 @@ public class Poker {
 													potCalle += Ciega.intValue();
 													apuestaCalle = Ciega.intValue();
 													j[xJug].setApuesta(j[xJug].getApuesta() + Ciega.intValue());
+													j[xJug].setActionPagoCiegaGrande(true);
 
 													//mainPot = mainPot.add(Ciega);
 													pagarCiegaGrande = false;
@@ -784,12 +892,21 @@ public class Poker {
 											     * - CUANDO INICIA EL FLOP SI EL PRIMERO ESTA FOLD O ALL IN O SIMPLEMENTE HACE CHECK TODO EL TURNO SE SALTA
 											     * - SOLO ESTA PARTE DEL CODIGO GENERA BUGS CON EL GUARDADO DE LA APUESTA (SE REINICIA A CERO)
 											     * */
+											    if(j[i].isActionPagoCiegaGrande() == true) {
+											    	j[i].setActionPagoCiegaGrande(false);
+											    	todosIgualaron = false;
+											    	if(apuestaCalle == Ciega.intValue()) {
+											    		checkAvairable = true;
+											    	}
+											    	break;
+											    }
 											    if(j[i].getApuesta() < apuestaCalle) {
 											        todosIgualaron = false;
 											        break;
 											    }
 											}
 											
+											//SE ASEGURA QUE AL MENOS LOS 4 JUGADORES JUGARON EL TURNO
 											++fin;
 											if(fin >= j.length && todosIgualaron) {
 												booAp = false;
@@ -824,19 +941,58 @@ public class Poker {
 									break;
 									case(4):
 										System.out.println("Fin de la Partida");
-										System.out.println("\n"
-											+ "----------------|DATOS FINALES|----------------\n"
-											+ "Pot: " + mainPot + " $\n"
-											+ "CARTAS CENTRO: " + Ctcentro[0].getCp() + "  " + Ctcentro[1].getCp() + "  " + Ctcentro[2].getCp() + "  " + Ctcentro[3].getCp() + "  " + Ctcentro[4].getCp() + "  \n"										
-										);
+										
+										List<Pot> pots = calcularPots();
+										System.out.println("\n----------------|DATOS FINALES|----------------\n");
+										
+										for(int i = 0; i<pots.size(); ++i) {
+											Pot pot = pots.get(i);
+
+											if(pot.getCantidad().compareTo(BigDecimal.ZERO) == 0) {
+												continue;
+											}
+											
+											String nmPot;
+											switch(i) {
+											case(0): 
+												nmPot = "Pot Principal: " + pot.getCantidad().intValue() + "$";
+											break;
+											case(1):
+												nmPot = "Pot Segundario: " + pot.getCantidad().intValue() + "$";
+											break;
+											case(2):
+												nmPot = "Pot Terciario: " + pot.getCantidad().intValue() + "$";
+											break;
+											case(3):
+												nmPot = "Pot Cuartenario: " + pot.getCantidad().intValue() + "$";
+											break;
+											default:
+												nmPot = "Pot Numero " + i + ": " + pot.getCantidad().intValue() + "$";  ;
+											}
+											
+											System.out.println(nmPot + " " + pot.getCantidad().intValue() + "$");
+											
+											System.out.print("Participan: ");
+											for(int k : pot.getJugador()) {
+												if(j[k].getTipo().equals("us")) {
+													System.out.print( j[k].gUs().getNombre() + ", ");
+												} else {
+													System.out.print( j[k].gAi().getNombreAI() + ", ");
+												}
+											}
+											System.out.println("");
+											
+										}
+											System.out.println("CARTAS CENTRO: " + Ctcentro[0].getCp() + "  " + Ctcentro[1].getCp() + "  " + Ctcentro[2].getCp() + "  " + Ctcentro[3].getCp() + "  " + Ctcentro[4].getCp() + "  \n");
+									
 										for(int i = 0; i<j.length; ++i) {
 											if(j[i].getTipo().equals("us")) {
-												Cartas[] cUs = j[xJug].gUs().getCartas();
+												Cartas[] cUs = j[i].gUs().getCartas();
 												cUs[0].setOculto(false);
 												cUs[1].setOculto(false);
 												System.out.print("MANO DE " + j[i].gUs().getNombre() + ":  "  + cUs[0].getCp() + "  " + cUs[1].getCp());
 											} else if(j[i].getTipo().equals("ai")) {
-												Cartas[] cUs = j[xJug].gAi().getCartas();
+												Cartas[] cUs = j[i].gAi().getCartas();
 												cUs[0].setOculto(false);
 												cUs[1].setOculto(false);
 												System.out.print("MANO DE " + j[i].gAi().getNombreAI() + ":  "  + cUs[0].getCp() + "  " + cUs[1].getCp());
@@ -848,7 +1004,79 @@ public class Poker {
 											}
 										}
 										System.out.println("");
-										System.out.println("GANADOR: "  );
+
+										//Repartir pots
+										System.out.println("------!REPARTO DE LOS POTS|------");
+										for(int i = 0; i<pots.size(); ++i) {
+											Pot pot = pots.get(i);
+
+											if(pot.getCantidad().compareTo(BigDecimal.ZERO) == 0) {
+												continue;
+											}
+											int x = calcularGanadorEntre(pot.getJugador(), Ctcentro);
+											switch(i) {
+											case(0):
+												System.out.print("Ganador del Pot Principal: ");
+												if(j[x].getTipo().equals("us")) {
+													System.out.print(j[x].gUs().getNombre());
+													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
+												} else {
+													System.out.print(j[x].gAi().getNombreAI());
+													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
+												}
+											break;
+											case(1):
+												System.out.print("Ganador del Pot Segundario: ");
+												if(j[x].getTipo().equals("us")) {
+													System.out.print(j[x].gUs().getNombre());
+													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
+												} else {
+													System.out.print(j[x].gAi().getNombreAI());
+													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
+												}
+											break;
+											case(2):
+												System.out.print("Ganador del Pot Terciario: ");
+												if(j[x].getTipo().equals("us")) {
+													System.out.print(j[x].gUs().getNombre());
+													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
+												} else {
+													System.out.print(j[x].gAi().getNombreAI());
+													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
+												}
+											break;
+											case(3):
+												System.out.print("Ganador del Pot Cuarternario: ");
+												if(j[x].getTipo().equals("us")) {
+													System.out.print(j[x].gUs().getNombre());
+													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
+												} else {
+													System.out.print(j[x].gAi().getNombreAI());
+													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
+												}
+											break;
+											default:
+												System.out.print("Ganador del Pot " + i + ": ");
+												if(j[x].getTipo().equals("us")) {
+													System.out.print(j[x].gUs().getNombre());
+													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
+												} else {
+													System.out.print(j[x].gAi().getNombreAI());
+													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
+												}
+											}
+											
+										}
+										/*	public void repartirPots(List<Pot> pots){
+
+	    for(Pot p : pots){
+
+	        int ganador = calcularGanadorEntre(p.jugador);
+
+	        j[ganador].sumarStack(p.cantidad);
+	    }
+	}
+	*/
 										calleActiva = false;
 									break;
 										}

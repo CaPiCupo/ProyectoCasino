@@ -1,6 +1,6 @@
 package casino;
 
-public class Jugador {
+public class Jugador{
 	private UsuarioPk us;
 	private PokerAI ai;
 	private int apuestaJugador;
@@ -8,8 +8,11 @@ public class Jugador {
 	private boolean actionFoldeo;
 	private boolean actionCheckIgualar;	
 	private boolean actionAllIn;
+	private boolean actionPagoCiegaGrande;
+	//private Cartas[] cartas;
 	
 	public Jugador() {
+		//this.cartas = new Cartas[2];
 	}
 
 	public UsuarioPk gUs() {
@@ -27,7 +30,15 @@ public class Jugador {
 	public void sAi(PokerAI ai) {
 		this.ai = ai;
 	}
-		
+	
+	/*public Cartas[] getCartas() {
+		return cartas;
+	}
+
+	public void setCartas(Cartas[] cartas) {
+		this.cartas = cartas;
+	}
+	 */
 	public int getApuesta() {
 		return apuestaJugador;
 	}
@@ -66,6 +77,14 @@ public class Jugador {
 
 	public void setActionAllIn(boolean actionAllIn) {
 		this.actionAllIn = actionAllIn;
+	}
+
+	public boolean isActionPagoCiegaGrande() {
+		return actionPagoCiegaGrande;
+	}
+
+	public void setActionPagoCiegaGrande(boolean actionPagoCiegaGrande) {
+		this.actionPagoCiegaGrande = actionPagoCiegaGrande;
 	}
 	
 	
