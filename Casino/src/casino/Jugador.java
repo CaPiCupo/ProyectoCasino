@@ -4,6 +4,7 @@ public class Jugador{
 	private UsuarioPk us;
 	private PokerAI ai;
 	private int apuestaJugador;
+	//private int apuestaTotalJugador;
 	private String tipo;
 	private boolean actionFoldeo;
 	private boolean actionCheckIgualar;	
@@ -46,6 +47,15 @@ public class Jugador{
 	public void setApuesta(int apuestaJugador) {
 		this.apuestaJugador = apuestaJugador;
 	}
+
+	/*public int getApuestaTotal() {
+		return apuestaTotalJugador;
+	}
+		
+	public void setApuestaTotal(int apuestaTotalJugador) {
+		this.apuestaJugador = apuestaTotalJugador;
+	}
+	*/
 
 	public String getTipo() {
 		return tipo;
