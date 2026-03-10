@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.math.RoundingMode;
 import java.util.Scanner;
 import java.util.Set;
@@ -20,7 +21,17 @@ public class Poker {
 	 * ARREGLAR CIEGA GRANDE PARA QUE PUEDA JUGAR TRAS QUE LE IGUALEN LA CIEGA - HECHO (CREO TAMBIEN)
 	 * ARREGLAR EL BOOLEAN QUE ESCONDE LAS CARTAS (tambien falla en el ALL IN)
 	 * SALTAR LAS TUS TURNOS SI TODOS HAN FOLDEAO O VAN ALL IN;
-	 * 
+	 * EL CODIGO SE CAGA ENCIMA CON NUMEROS MUY MUY GRANDES:		SOLUCIONES PARA ESO:
+	 *  DEBUG OBTENER APUESTA DE JUGADOR INDEX0: 1000000000			-NOSE
+	 *  DEBUG OBTENER APUESTA DE JUGADOR INDEX1: 783460140			-BIGDECIMAL HASTA EN LA SOPA
+	 *  DEBUG OBTENER APUESTA DE JUGADOR INDEX2: 1222395420			-PONER Y BUSCAR UN LIMITE PARA LAS APUESTAS 
+	 *  DEBUG OBTENER APUESTA DE JUGADOR INDEX3: 1089540243	 
+	 *  Pot Principal: -1161126736$ WHAAAA PASO DE EL INT MAX VALUE
+	 *  
+	 *  SI SE GENERA UN CUARTO POT (ES DECIR UNO DONDE SOLO HAY EL DINERO SOBRANTE DE UN ALL IN, ESTE DEBE DE DEVOLVER EL DINERO 
+	 *  	ACTUALMENTE DA UN ERROR DE ARRAYOUTOFBOUNDS PORQUE EL METODO LE DA EL DINERO A EL QUE GANA
+	 *  HACER EL EMPATE
+	 *  
 	 */
 	private UsuarioPk us; 
 	private UsuarioPk us2;
@@ -37,7 +48,7 @@ public class Poker {
 	static BigDecimal stack;
 	static String[] liCalle = {"PREFLOP", "FLOP", "TURN", "RIVER"};
 	static String[] liTipoAi = {"EarlyH2", "EarlyH1", "EarlyHB", "EarlyB1" ,"EarlyB2","TrueHB", "LateH2", "LateH1", "LateHB", "LateB1" ,"LateB2", "JCK"};
-	static String[] liNombreAi = {"Cashy MacMoneyFace", "Chris MoneyMaker", "Trabajador de cuello azul", "Casado con los ahorros", "Un pensionista", "Quique", "Goku", "LeBrons", "La virgen Maria", "Rebeca Racañez", "Mario Hidalgo", "Ea Nasir", "Yakub", "Abraxas", "Manny Heffley", "Super Bigote", "John Casino", "Federico Apuestas", "Gru", "Shrek", "Grug Crood", "El Lorax", "Balatro Balatrez", "Dr. Gregory House", "Media Docena de Minions", "Un tipo con un sombrero guay", "Hegel", "Teto Kasane", "Dos duendes en una gabardina", "3 puros y una persona", "Dinero Dinerez", "El preterito pluscuamperfecto", "Schopenhauer", "Subaru Estrella", "Mortadelo", "Sticky Joe", "El PIB de Haiti", "Apple Jack", "Un chino", "Hideo Kojima", "Señor Pink", "Mordekaiser", "D.B. Cooper","Hornet", "Fishy ahh looking person" , "Therian de un pez gota", "THE CEO MINDSET", "Sheldon l.cooper", "Kike", "Quike", "Kique", "Opsie! All Aces", "Rigoberto Faroles" , "Un Fiat multipla"};
+	static String[] liNombreAi = {"Cashy MacMoneyFace", "Chris MoneyMaker", "Trabajador de cuello azul", "Casado con los ahorros", "Un pensionista", "Quique", "Goku", "LeBrons", "Rebeca Racañez", "Ea Nasir", "Yakub", "Abraxas", "Manny Heffley", "Super Bigote", "John Casino", "Federico Apuestas", "Gru", "Shrek", "Grug Crood", "El Lorax", "Balatro Balatrez", "Dr. Gregory House", "Media Docena de Minions", "Un tipo con un sombrero muy guay", "Hegel", "Teto Kasane", "Dos duendes en una gabardina", "Tres puros y una persona", "Dinero Dinerez", "El preterito pluscuamperfecto", "Schopenhauer", "Subaru Estrella", "Mortadelo", "Sticky Joe", "El PIB de Haiti", "Apple Jack", "Un chino", "Hideo Kojima", "Señor Pink", "Mordekaiser", "D.B. Cooper","Hornet", "Therian de un pez gota", "THE CEO MINDSET", "Sheldon l.cooper", "Kike", "Quike", "Kique", "Opsie! All Aces", "Rigoberto Faroles" , "Un Fiat multipla", "Margaret Thatcher", "La Ciudad de Birmingham", "Bebe con hidrocefalia", "Quique una vez mas", "Martin Allin", "El Wario de Quique, Duidue", "Uno del Lepe", "Mayonesa que cobro vida", "Dr.Holocaust", "El Sozio", "Don Chorbo Galaxia", "MENA con la paga minima", "É um macaco"};
 	
 	public Poker (UsuarioPk us, UsuarioPk us2,/*Usuario us, Usuario us2,*/ boolean multijugador) {
 		this.us = us;
@@ -47,7 +58,7 @@ public class Poker {
 		for(int i = 0; i<j.length; i++) {
 	        j[i] = new Jugador();
 		}
-		
+
 		generarCarta();
 		generarJugadores();
 		juegodePoker();
@@ -185,30 +196,75 @@ public class Poker {
 	}
 	
 	public int calcularGanadorEntre(List<Integer> jugadores, Cartas[] ctCentro){
-
+		//TODO EL EMPATE
 	    int xJugMejor = jugadores.get(0);
+	    int jugsEmp = -1;
 
 	    for(int i : jugadores){
-
-	        if(esIGanador(i, xJugMejor, ctCentro)){
+	    	int cacaMu = esIGanador(i, xJugMejor, ctCentro);
+	    	
+	        if(cacaMu== 1){
 	        	xJugMejor = i;
+	        	jugsEmp = -1;
+	        } else if(cacaMu == 2) { //EMPARTE ENTRE DOS 
+	        	if(jugsEmp >= 10) {
+	        		if(jugsEmp >= 100) {
+	        				jugsEmp += xJugMejor*1000;
+	        		} else {
+	        			jugsEmp += xJugMejor*100;
+	        		}
+	        	} else {
+	        		jugsEmp= i + xJugMejor*10;
+	        	}
+	        	xJugMejor = i;	
+	        }
+        	System.out.println("DEBUG JUGADOR INDICE I: " + i);
+        	System.out.println("DEBUG JUGADOR MEJOR ACTUAL: " + xJugMejor);
+        	System.out.println("DEBUG NUMERO EMPATE: " + jugsEmp);
+	    }
+
+	    if(jugsEmp != -1) {
+	    	System.out.println("DEBUG ERROR HUBO EMPATE");
+	    	return jugsEmp;
+	    }
+	    return xJugMejor;
+	}
+	//TODO TODO TODO TODO TODO
+	public List<Integer> calcularGanadoresEntre(List<Integer> jugadores, Cartas[] ctCentro) {
+
+	    List<Integer> ganadores = new ArrayList<>();
+	    int xJugMejor = jugadores.get(0);
+	    ganadores.add(xJugMejor);
+
+	    for(int i : jugadores) {
+	        int comp = esIGanador(i, xJugMejor, ctCentro);
+	        if(comp == 1) { 
+	            xJugMejor = i;
+	            ganadores.clear();
+	            ganadores.add(i);
+	        } else if(comp == 2) { 
+	            // empate
+	            ganadores.add(i);
 	        }
 	    }
 
-	    return xJugMejor;
+	    return ganadores;
 	}
 	
-	public boolean esIGanador(int indexNuevo, int indexGanador, Cartas[] ctCentro) {
-		if(identificarMano(indexNuevo, ctCentro) == identificarMano(indexGanador, ctCentro)) {
-			//TODO EMPATE REPARTIR EL POT CORRESPONDIENTE POR LA MITAD
-		} else if(identificarMano(indexNuevo, ctCentro) > identificarMano(indexGanador, ctCentro)){
-			return true;
-		}
+	public int esIGanador(int indexNuevo, int indexGanador, Cartas[] ctCentro) {
+		long loNuevo = identificarMano(indexNuevo, ctCentro);
+		long loGanViejo = identificarMano(indexGanador, ctCentro);
 		
-		return false;
+		if(loNuevo > loGanViejo) {
+			//TODO EMPATE REPARTIR EL POT CORRESPONDIENTE POR LA MITAD
+			return 1;
+		} else if(loNuevo == loGanViejo){
+			return 2;
+		}
+		return 0;
 	}
 	
-	public double identificarMano(int xJug, Cartas[] ctCentro) {
+	public long identificarMano(int xJug, Cartas[] ctCentro) {
 		Cartas[] ctJug;
 		if(j[xJug].getTipo().equals("us")) {
 			ctJug = j[xJug].gUs().getCartas();
@@ -223,13 +279,12 @@ public class Poker {
 		for(Cartas c : ctJug) {
 			ctTotal[idxTotal++] = c;
 		}
-		int mano = 0;
-		int valorMano = 0;
+
+		long valorMano = 0L;
 		int parejas = 0;
 		boolean trio = false;
 		boolean escalera = false;
 		boolean color = false;
-		boolean fullHouse = false;
 		boolean poker = false;
 		boolean escaleraColor = false;
 		//TODO
@@ -237,7 +292,16 @@ public class Poker {
 		 * EJEMPLO: SI ES PAR mano += 1000; que sean los millares lo que marquen la mano; (9000 desde la escarera de color a 0000 de la carta unica)
 		 * MARIO POR CIERTO, LA DOBLE PAREJA SE BASA EN LA PAREJA CON EL VALOR MAYOR, Y SI SON IGUALES PUES EN LA PAREJA CON MENOR VALOR; LOS MISMO CON EL FULL HOUSE.
 		 *
+		 * REGLAS PARA DESEMPATAR: SE CUENTAN LAS 5 CARTAS MAS ALTAS
+		 * Parejas 			3 Kickers
+		 * Doble Pareja		1 Kickers
+		 * Trio 			2 kickers
+		 * Escalera  		Carta Mas Alta
+		 * Color 			Entre las 5 cartas del color, la mas alta
+		 * Full House 		Valor de Trio Mas Alto o valor de la pareja mas alta, o si hay dos trios, el trio mas alto
+		 * Poker			1 Kicker
 		 * */
+		
 		//IDENTIFICAR NUMERO DE PAREJAS: STRING = EL NUMERO; INTEGER = VECES QUE ESTE APARECE
 		//	HashMap<KEYS, VALUE>
 		HashMap<String, Integer> numIguales = new HashMap<String, Integer>();
@@ -245,26 +309,37 @@ public class Poker {
 			String valor = c.getNumero();
 			numIguales.put(valor, numIguales.getOrDefault(valor, 0) + 1);
 		}
-		//Set para identificar el valor de las manos
-		Set<String> setDeKeys = numIguales.keySet();
+
+		List<Integer> valorPareja = new ArrayList<>();
+		List<Integer> valorTrio = new ArrayList<>();
+		List<Integer> valorPoker = new ArrayList<>();
+		List<Integer> valorCartasSuelta = new ArrayList<>();
 		
-		for(int nose : numIguales.values()) {
-			
-			if(nose == 4) {
+		for(Map.Entry<String, Integer> entrada : numIguales.entrySet()) {
+			if(entrada.getValue() == 4) {
+				valorPoker.add(getValorRealCarta(entrada.getKey()));
 				poker = true;
-			} else if (nose == 3) {
+				if(parejas > 0) {
+					valorCartasSuelta.add(valorPareja.get(0));
+					if(parejas == 2) {
+						valorCartasSuelta.add(valorPareja.get(1));
+					}
+						
+				}
+			}
+			if(entrada.getValue() == 3) {
+				valorTrio.add(getValorRealCarta(entrada.getKey()));
 				trio = true;
-			} else if (nose == 2) {
+			}
+			if(entrada.getValue() == 2) {
+				valorPareja.add(getValorRealCarta(entrada.getKey()));
 				parejas++;
 			}
-			
-			if(parejas >= 1 && trio == true) {
-				parejas = 1;
-				trio = false;
-				color = false;
-				fullHouse = true;
+			if(entrada.getValue() == 1 || ((entrada.getValue() == 2) && poker == true)) {
+				valorCartasSuelta.add(getValorRealCarta(entrada.getKey()));
 			}
 		}
+
 		//IDENTIFICAR ESCALERA:
 		HashMap<Integer, Integer> numValorEscalera = new HashMap<Integer, Integer>();
 		for(Cartas c : ctTotal) {
@@ -276,22 +351,25 @@ public class Poker {
 		
 		int cons = 1;
 		int maxCons = 1;
+		int ctMaxEscalera = 0;
 		for(int i = 1; i<val.size(); i++) {
 			if(val.get(i) == val.get(i -1) +1) {
 				cons++;
 				maxCons = Math.max(maxCons, cons);
+				if(maxCons >= 5) {
+					escalera = true;
+					ctMaxEscalera = val.get(i);
+				}				
 			} else {
 				cons = 1;
 			}
 		}
-		if(maxCons >= 5) {
-			escalera = true;
-		}
-		
+
 		//DE ALGUNA MANERA DEBO DE ENCONTRAR QUE A2345 SEA ESCALERA
 		List<Integer> expAceTo5li = List.of(14, 2, 3, 4, 5);
 		if(val.containsAll(expAceTo5li)) {
 			escalera = true;
+			ctMaxEscalera = 5;
 		}
 
 		//IDENTIFICAR COLOR:
@@ -301,28 +379,129 @@ public class Poker {
 			colorIgual.put(colorA, colorIgual.getOrDefault(colorA, 0) + 1);
 			
 		}
-		Set<String> setDeKeyColor = colorIgual.keySet();
 		
-		for(int nose2 : colorIgual.values()) {			
-			if(nose2 == 5) {
+		List<Integer> valorColor = new ArrayList<>();
+		String colorPalo = null;
+		for(Map.Entry<String, Integer> entrada: colorIgual.entrySet()) {
+			if(entrada.getValue() >= 5) {
+				colorPalo = entrada.getKey();
 				color = true;
-				parejas = 0;
-				trio = false;
+				break;
+			}
+		}
+		
+		if(colorPalo != null) {
+			for(Cartas c : ctTotal) {
+				if(c.getColor().equals(colorPalo)) {
+					valorColor.add(getValorRealCarta(c.getNumero()));
+				}
+			}
+		}
+		//IDENTIFICAR ESCALERA DE COLOR:
+
+		Collections.sort(valorColor);
+		
+		int consC = 1;
+		int maxConsC = 1;
+		int ctMaxEscaleraC = 0;
+		for(int i = 1; i<valorColor.size(); i++) {
+			if(valorColor.get(i) == valorColor.get(i -1) +1) {
+				consC++;
+				maxConsC = Math.max(maxConsC, consC);
+				if(maxConsC >= 5) {
+					escaleraColor = true;
+					ctMaxEscaleraC = valorColor.get(i);
+				}				
+			} else {
+				consC = 1;
+			}
+		}
+
+		//DE ALGUNA MANERA DEBO DE ENCONTRAR QUE A2345 SEA ESCALERA
+		List<Integer> expAceTo5liC = List.of(14, 2, 3, 4, 5);
+		if(valorColor.containsAll(expAceTo5liC)) {
+			escaleraColor = true;
+			ctMaxEscaleraC = 5;
+		}
+		Collections.sort(valorCartasSuelta, Collections.reverseOrder()); //REVERSE ORDER PORQUE MUCHAS VECES SOLO QUIERO EL VALOR MAS ALTO
+		Collections.sort(valorPareja, Collections.reverseOrder());
+		Collections.sort(valorTrio, Collections.reverseOrder());
+		Collections.sort(valorPoker, Collections.reverseOrder());
+		Collections.sort(valorColor, Collections.reverseOrder());
+		//PARA LA ESCALERA NO HAY UNA LISTA SOLO UN INT CON SU VALOR MAXIMO
+		
+		//DAR VALORES DE LA MANOS (EN MILLARES+1 9000000000-0000000000) Y EL VALOR DE LAS CARTAS PARA DIFERENCIAR ENTRE ELLAS
+		//ESCALERA DE COLOR	
+		if(escaleraColor) {		
+			long escColor = 900000000000L;
+			escColor += ctMaxEscaleraC*1000000; //1000000 porque si es entre (14-10) se me sumaria al 9000000
+			valorMano = escColor;
+			System.out.println("DEBUG MANO ESCALERA: " + valorMano);
+		} else if(poker == true &&!(valorPoker.isEmpty())) {
+			long esPoker = 80000000000L;
+			esPoker += valorPoker.get(0)*100000000;
+			esPoker += valorCartasSuelta.get(0)*1000000;
+			valorMano = esPoker;
+			System.out.println("DEBUG MANO POKER: " + valorMano);
+
+			//FULL HOUSE
+		} else if(trio == true && parejas > 0) {
+			long esFullHouse = 70000000000L;
+			if(valorTrio.size() == 2) {
+				esFullHouse += valorTrio.get(0)*100000000;
+				esFullHouse += valorTrio.get(1)*1000000;
+			} else {
+				esFullHouse += valorTrio.get(0)*100000000;
+				esFullHouse += valorPareja.get(0)*1000000;
 			}
 			
-		}
-	
-		if(escalera == true && color == true) {
-			
-			//ESTO NO FUNCIONA
-			//LO QUE TENGO QUE HACER (TODO) ES VER SI LAS CARTAS QUE FORMAN LA ESCALERA Y LAS CARTAS QUE FORMAN EL COLOR SON LAS MISMAS
-			escaleraColor = true;
-			escalera = false;
-			color = false;
+			valorMano = esFullHouse;
+			System.out.println("DEBUG MANO FULL HOUSE: " + valorMano);
+		} else if(color == true &&!(valorColor.isEmpty())) {
+						  long esColor = 60000000000L;
+			esColor += valorColor.get(0)*100000000;
+			esColor += valorColor.get(1)*1000000;
+			esColor += valorColor.get(2)*10000;
+			esColor += valorColor.get(3)*100;
+			esColor += valorColor.get(4);
+			valorMano = esColor;
+		} else if(escalera == true && ctMaxEscalera != 0) {
+			long esCalera = 50000000000L;
+			esCalera += ctMaxEscalera*1000000;
+			valorMano = esCalera;
+			System.out.println("DEBUG MANO ESCALERA: " + valorMano);
+		} else if(trio == true &&!(valorTrio.isEmpty())) {
+			long esTrio = 40000000000L;
+			esTrio += valorTrio.get(0)*100000000;
+			esTrio += valorCartasSuelta.get(0)*1000000;
+			esTrio += valorCartasSuelta.get(1)*10000;
+			valorMano = esTrio;
+			//DOBLE PAREJA
+			System.out.println("DEBUG MANO TRIO: " + valorMano);
+		} else if(parejas == 2 &&!(valorPareja.isEmpty())) {
+			long esDoblePareja = 30000000000L;
+			esDoblePareja += valorPareja.get(0)*100000000;
+			esDoblePareja += valorPareja.get(1)*1000000;
+			esDoblePareja += valorCartasSuelta.get(0)*10000;
+			valorMano = esDoblePareja;
+			System.out.println("DEBUG MANO DOBLEPAREJA: " + valorMano);
+		} else if(parejas == 1 &&!(valorPareja.isEmpty())) {
+			long esPareja = 20000000000L;
+			esPareja += valorPareja.get(0)*100000000;
+			esPareja += valorCartasSuelta.get(0)*1000000;
+			esPareja += valorCartasSuelta.get(1)*10000;
+			esPareja += valorCartasSuelta.get(2)*100;
+			valorMano = esPareja;
+			//CARTAS SUELTA
+			System.out.println("DEBUG MANO PAREJA: " + valorMano);
+		} else {
+			long ctSueltas = valorCartasSuelta.get(0)*100000000 + valorCartasSuelta.get(1)*1000000 + valorCartasSuelta.get(2)*10000 + valorCartasSuelta.get(3)*100 + valorCartasSuelta.get(4);
+			valorMano = ctSueltas;
+			System.out.println("DEBUG MANO CARTASSUELTAS: " + valorMano);
 		}
 		
 		
-		//DAR VALORES DE LA MANOS (EN MILLARES 9000-0000) Y EL VALOR DE LAS CARTAS PARA DIFERENCIAR ENTRE ELLAS
+		return valorMano;
 	}
 	
 	public int getValorRealCarta(String num) {
@@ -377,7 +556,7 @@ public class Poker {
 	 * @return
 	 */
 	public List<Pot> calcularPots() {
-		/*TODO 
+		/*TODO HECHO
 		 * HAY UN PROBLEMA EN LAS APUESTAS EN EL ADD 
 		 * DEBUG 100% PROBLEMA EN EL  if(diferencia.compareTo(BigDecimal.ZERO) > 0
 			DEBUG NIVEL ACTUAL 0 ==> TIENE QUE SER AQUI EL PROBLEMA
@@ -390,7 +569,7 @@ public class Poker {
 	    for(int i = 0; i < j.length; i++){
 	      //  if(!j[i].isActionFoldeo()){ //PORQUE???? MARIO DEL PASADO PAYASO
 	            apuestas.add(new BigDecimal(j[i].getApuesta()));
-	            System.out.println("DEBUG APUESTA DEL JUGADOR " + i + " :" + j[i].getApuesta());
+	           // System.out.println("DEBUG APUESTA DEL JUGADOR " + i + " :" + j[i].getApuesta());
 	        //} 
 	    }
 
@@ -411,7 +590,7 @@ public class Poker {
 
 	            List<Integer> jugadoresPot = new ArrayList<>();
 	            int jugSinFold = 0;
-	        	System.out.println("DEBUG 0% PROBLEMA EN EL if(diferencia.compareTo(BigDecimal.ZERO) > 0");
+	        	//System.out.println("DEBUG 0% PROBLEMA EN EL if(diferencia.compareTo(BigDecimal.ZERO) > 0");
 	            /**TODO
 	             * QUIZA ESTO && new BigDecimal(j[k].getApuesta()).compareTo(nivelActual) >= 0 SEA UNA MALA IDEA 
 	             * LOS POTS DEBEN DE FUNCIONAR ASI
@@ -473,6 +652,7 @@ public class Poker {
 	public static void reiniciarDatos(){
 			
 	}
+	
 	public boolean todosFoldeados () {
 		int xJugSinFoldear = 0;
 		int unicoSinFolder = -1;
@@ -1277,6 +1457,7 @@ public class Poker {
 													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
 												}
 											}
+											System.out.println("");
 											
 										}
 										/*	public void repartirPots(List<Pot> pots){

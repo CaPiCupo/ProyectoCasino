@@ -62,18 +62,13 @@ public class Interfaz {
 								"\nANALIZANDO DINERO EN LA CUENTA"
 								);
 						//Esto de aqui le da delay a la aplicacion (el try y el catch por que a veces da fallos) se puede borrar
-						try {
-						Thread.sleep(800);
-						} catch (InterruptedException e) {	
-						}
+						Met.esperarSeg(800);
 						System.out.println("Dinero Actual: " + usArray[i].getDinero() + "$" + 
 								"\n\nACTIVANDO PROMOCION GRATUITA PARA POBRES" 
 						);
 						usArray[i].setUsoPromocion(true);
-						try {
-						Thread.sleep(800);
-						} catch (InterruptedException e) {	
-						}
+						Met.esperarSeg(800);
+
 						usArray[i].setDinero(new BigDecimal ("100.00"));
 						System.out.println("+100$ DE PROMOCION");
 					} else {
@@ -180,18 +175,13 @@ public class Interfaz {
 								System.out.println("" +
 										"\nANALIZANDO DINERO EN LA CUENTA"
 											);
-								try {
-								Thread.sleep(800);
-								} catch (InterruptedException e) {	
-								}
+
+								Met.esperarSeg(800);
 								System.out.println("Dinero Actual: " + usArray[i].getDinero() + "$" + 
 										"\n\nACTIVANDO PROMOCION GRATUITA PARA POBRES" 									
 										);
 								usArray[i].setUsoPromocion(true);
-								try {
-								Thread.sleep(800);
-								} catch (InterruptedException e) {	
-								}
+								Met.esperarSeg(800);
 								usArray[i].setDinero(new BigDecimal ("100.00"));
 								System.out.println("+100$ DE PROMOCION");
 			        				booOp1 = false;
@@ -438,18 +428,12 @@ public class Interfaz {
 										System.out.println("" +
 												"\nANALIZANDO DINERO EN LA CUENTA"
 													);
-										try {
-										Thread.sleep(800);
-										} catch (InterruptedException e) {	
-										}
+										Met.esperarSeg(800);
 										System.out.println("Dinero Actual: " + usArray[i2].getDinero() + "$" + 
 												"\n\nACTIVANDO PROMOCION GRATUITA PARA POBRES" 									
 												);
 										usArray[i2].setUsoPromocion(true);
-										try {
-										Thread.sleep(800);
-										} catch (InterruptedException e) {	
-										}
+										Met.esperarSeg(800);
 										usArray[i2].setDinero(new BigDecimal ("100.00"));
 										System.out.println("+100$ DE PROMOCION");
 										mutl  = false;
@@ -512,14 +496,10 @@ public class Interfaz {
 				}
 			    break;
 				case(4): 
-					Collections.addAll(setNombresCreditos,
-					        "Mario Hidalgo Rodriguez Cruz",
-					        "Ricardo Fernando Raymundo Saldaña ",				 
-					        "Pedro Manuel Maqueda Diaz"
-					        );
+				Collections.addAll(setNombresCreditos, "Mario Hidalgo Rodriguez Cruz", "Ricardo Fernando Raymundo Saldaña ","Pedro Manuel Maqueda Diaz");
 				List<String> lista = new ArrayList<>(setNombresCreditos);
-				System.out.println(lista.get(0) + ": Interfaz, Carrera Caballos y Poker");
-				System.out.println(lista.get(1) + ": Subasta Cartas");
+				System.out.println(lista.get(1) + ": Interfaz, Carrera Caballos y Poker");
+				System.out.println(lista.get(0) + ": Subasta Cartas");
 				System.out.println(lista.get(2) + ": BlackJack");
 				System.out.println("\nGRACIAS POR DISFRUTAS DE LOS FRUTOS DE ESTE PROYECTO :)");
 				break;

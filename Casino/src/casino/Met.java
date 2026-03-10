@@ -35,7 +35,11 @@ public class Met {
         }
     	moverCursorInicio();
     }
-    
+    /**
+     * Utiliza el metodo thread.sleep para usarse en todo el proyecto
+     * Thread.sleep(t); es del paquete Java.lang, es usado para suspender el flujo por un cantidad de milisegundos especificos 
+     * @param t
+     */
     public static void esperarSeg(int t) {
     	try {
     	    Thread.sleep(t);
@@ -43,6 +47,7 @@ public class Met {
     	    Thread.currentThread().interrupt();
     	}
     }
+    
     /**
      * 
      * @param n

@@ -250,7 +250,6 @@ public class SubastaCartas {
         System.out.println("Has ganado " + dineroGanado + " de dinero.");
         System.out.println("Tu nuevo saldo es: " + j1.getUs().getDinero());
 
-        sc.close();
     }
 
     private static void inicializarCartasNormales() {
