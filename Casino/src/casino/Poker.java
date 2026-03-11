@@ -51,8 +51,8 @@ public class Poker {
 	static BigDecimal stack;
 	static String[] liCalle = {"PREFLOP", "FLOP", "TURN", "RIVER"};
 	static String[] liTipoAi = {"EarlyH2", "EarlyH1", "EarlyHB", "EarlyB1" ,"EarlyB2","TrueHB", "LateH2", "LateH1", "LateHB", "LateB1" ,"LateB2", "JCK"};
-	static String[] liNombreAi = {"Cashy MacMoneyFace", "Chris MoneyMaker", "Trabajador de cuello azul", "Casado con los ahorros", "Un pensionista", "Quique", "Goku", "LeBrons", "Rebeca Racañez", "Ea Nasir", "Yakub", "Abraxas", "Manny Heffley", "Super Bigote", "John Casino", "Federico Apuestas", "Gru", "Shrek", "Grug Crood", "El Lorax", "Balatro Balatrez", "Dr. Gregory House", "Media Docena de Minions", "Un tipo con un sombrero muy guay", "Hegel", "Teto Kasane", "Dos duendes en una gabardina", "Tres puros y una persona", "Dinero Dinerez", "El preterito pluscuamperfecto", "Schopenhauer", "Subaru Estrella", "Mortadelo", "Sticky Joe", "El PIB de Haiti", "Apple Jack", "Un chino", "Hideo Kojima", "Señor Pink", "Mordekaiser", "D.B. Cooper","Hornet", "Therian de un pez gota", "THE CEO MINDSET", "Sheldon l.cooper", "Kike", "Quike", "Kique", "Opsie! All Aces", "Rigoberto Faroles" , "Un Fiat multipla", "Margaret Thatcher", "La Ciudad de Birmingham", "Bebe con hidrocefalia", "Quique una vez mas", "Martin Allin", "El Wario de Quique, Duidue", "Uno del Lepe", "Mayonesa que cobro vida", "Dr.Holocaust", "El Sozio", "Don Chorbo Galaxia", "MENA con la paga minima", "É um macaco"};
-	
+	static String[] liNombreAi = {"Cashy MacMoneyFace", "Chris MoneyMaker", "Trabajador de cuello azul", "Casado con los ahorros", "Un pensionista", "Quique", "Goku", "LeBrons", "Rebeca Racañez", "Ea Nasir", "Yakub", "Abraxas", "Manny Heffley", "Super Bigote", "John Casino", "Federico Apuestas", "Gru", "Papa Shrek y los Ogritos Trillizos", "Grug Crood", "El Lorax", "Balatro Balatrez", "Dr. Gregory House", "Media Docena de Minions", "Un tipo con un sombrero muy guay", "Hegel", "Teto Kasane", "Dos duendes en una gabardina", "Tres puros y una persona", "Dinero Dinerez", "El preterito pluscuamperfecto", "Schopenhauer", "Subaru Estrella", "Mortadelo", "Sticky Joe", "El PIB de Haiti", "Apple Jack", "Un chino", "Hideo Kojima", "Señor Pink", "Mordekaiser", "D.B. Cooper","Hornet", "Therian de un pez gota", "THE CEO MINDSET", "Sheldon l.cooper", "Kike", "Quike", "Kique", "Rigoberto Faroles" , "Un Fiat multipla", "Margaret Thatcher", "La Ciudad de Birmingham", "Bebe con hidrocefalia", "Quique una vez mas", "Martin Allin", "El Wario de Quique, Duidue", "Uno del Lepe", "Mayonesa que cobro vida", "La Mama de Quique, Quica", "Dr.Holocausto", "El Sozio", "Don Chorbo Galaxia", "MENA con la paga minima", "É um macaco", "El primito de Quique, Quiqui", "Persona con hipo", "El Sintecho de la Esquina", "Treinta Personas compartiendo Cartas", "Niño que va a salvar la Navidad"};
+	static PokerAI[] ai = new PokerAI[4];
 	public Poker (UsuarioPk us, UsuarioPk us2,/*Usuario us, Usuario us2,*/ boolean multijugador) {
 		this.us = us;
 		this.multijugador = multijugador;
@@ -96,7 +96,7 @@ public class Poker {
 	}
 	
 	public void generarAI() {
-		PokerAI[] ai = new PokerAI[4];
+
 	    Random r = new Random();
 		if (multijugador && us2 != null) {
 			for(int i = 2; i < 4; ++i) {
@@ -128,6 +128,21 @@ public class Poker {
 			}
 		}
 		
+	}
+	
+	public void generar1Ai(int i) {
+		Random r = new Random();
+		ai[i] = new PokerAI();
+		ai[i].setTipoAI(liTipoAi[r.nextInt(liTipoAi.length)]);
+		ai[i].setNombreAI(liNombreAi[r.nextInt(liNombreAi.length)]);
+		ai[i].setCartas(new Cartas[2]);
+		ai[i].setDinero(stack.multiply(BigDecimal.valueOf(0.75f + r.nextFloat() * (0.50f))).setScale(0, RoundingMode.HALF_EVEN));
+		ai[i].setPosicion(i);
+		ai[i].setSidePot(false);
+		j[i].sAi(ai[i]);
+		j[i].sUs(null);
+		//j[i].sPos(i);
+		j[i].setTipo("ai");
 	}
 	public static void generarCarta() {	
 		int i;
@@ -438,11 +453,17 @@ public class Poker {
 			escaleraColor = true;
 			ctMaxEscaleraC = 5;
 		}
-		Collections.sort(valorCartasSuelta, Collections.reverseOrder()); //REVERSE ORDER PORQUE MUCHAS VECES SOLO QUIERO EL VALOR MAS ALTO
+
+
 		Collections.sort(valorPareja, Collections.reverseOrder());
 		Collections.sort(valorTrio, Collections.reverseOrder());
 		Collections.sort(valorPoker, Collections.reverseOrder());
 		Collections.sort(valorColor, Collections.reverseOrder());
+		//PARA LA DOBLE PAREJA CON 3 PAREJAS (LA MAS BAJA PASA A SER UN KICKER)
+		if(valorPareja.size() == 3) {
+			valorCartasSuelta.add(valorPareja.remove(2));
+		}
+		Collections.sort(valorCartasSuelta, Collections.reverseOrder()); //REVERSE ORDER PORQUE MUCHAS VECES SOLO QUIERO EL VALOR MAS ALTO
 		//PARA LA ESCALERA NO HAY UNA LISTA SOLO UN INT CON SU VALOR MAXIMO
 		
 		//DAR VALORES DE LA MANOS (EN MILLARES+1 9000000000-0000000000) Y EL VALOR DE LAS CARTAS PARA DIFERENCIAR ENTRE ELLAS
@@ -493,7 +514,7 @@ public class Poker {
 			valorMano = esTrio;
 			//DOBLE PAREJA
 			System.out.println("DEBUG MANO TRIO: " + valorMano);
-		} else if(parejas == 2 &&!(valorPareja.isEmpty())) {
+		} else if(parejas >= 2 &&!(valorPareja.isEmpty())) {
 			long esDoblePareja = 30000000000L;
 			esDoblePareja += valorPareja.get(0)*100000000;
 			esDoblePareja += valorPareja.get(1)*1000000;
@@ -668,23 +689,31 @@ public class Poker {
 			
 	}
 	
-	public boolean todosFoldeados () {
-		int xJugSinFoldear = 0;
-		int unicoSinFolder = -1;
+	public int jugadorActivo() {
 
-		for(int i = 0; i < j.length; i++){
-		    if(!j[i].isActionFoldeo()){
-		    	xJugSinFoldear++;
-		    	unicoSinFolder = i;
-		    }
-		}
+	    int idx = -1;
+	    int activos = 0;
 
-		if(xJugSinFoldear == 1){
-		   return true;
-		} else {
-			return false;
-		}
+	    for(int i = 0; i < j.length; i++) {
+
+	        if(!j[i].isActionFoldeo() && !j[i].isActionAllIn()) {
+	            activos++;
+	            idx = i;
+
+	            if(activos > 1) {
+	                return -1; // hay más de uno activo
+	            }
+	        }
+	    }
+
+	    if(activos == 1) {
+	        return idx;
+	    }
+	    
+	    return -1;
+
 	}
+
 	public void repartirPot(int ganador, BigDecimal mainPot){
 
 	    if(j[ganador].getTipo().equals("us")){
@@ -718,6 +747,7 @@ public class Poker {
 			} else {							
 				System.out.println("");
 				stack1 = BigDecimal.valueOf(st);
+				us.setDinero(us.getDinero().subtract(stack1));
 				us.setStack(stack1);
 				if(us.getUsuario().getTmEnDeuda() != -1) {
 				us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
@@ -733,6 +763,7 @@ public class Poker {
 				} else {							
 					System.out.println("");
 					stack2 = BigDecimal.valueOf(st2);
+					us2.setDinero(us2.getDinero().subtract(stack2));
 					us2.setStack(stack2);
 					if(us2.getUsuario().getTmEnDeuda() != -1) {
 					us2.getUsuario().setTmEnDeuda(us2.getUsuario().getTmEnDeuda() -1);
@@ -752,6 +783,7 @@ public class Poker {
 			} else {							
 				System.out.println("");
 				stack = BigDecimal.valueOf(st);
+				us.setDinero(us.getDinero().subtract(stack));
 				us.setStack(stack);
 				if(us.getUsuario().getTmEnDeuda() != -1) {
 				us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
@@ -899,6 +931,7 @@ public class Poker {
 
 									int potCalle = 0;
 									int apuestaCalle = 0;
+									int xJugFin = -1;
 									for(int i = 0; i<j.length; i++) {
 										j[i].setActionFoldeo(false);
 										j[i].setActionAllIn(false);
@@ -912,8 +945,10 @@ public class Poker {
 												+ "Pot: " + mainPot + " $\n"
 												+ liCalle[ronda] +": " + Ctcentro[0].getCp() + "  " + Ctcentro[1].getCp() + "  " + Ctcentro[2].getCp() + "  " + Ctcentro[3].getCp() + "  " + Ctcentro[4].getCp() + "  \n"										
 												);
+										Met.esperarSeg(1500);
 										int xJug = prCiega;
 										int fin = 0;
+										xJugFin = jugadorActivo();
 										//boolean pagarCiega = false;
 										boolean checkAvairable = true;
 										for(int i = 0; i<j.length; i++) {
@@ -959,7 +994,7 @@ public class Poker {
 													potCalle += smallBlind.intValue();
 													if(apuestaCalle < smallBlind.intValue()) {
 													apuestaCalle = smallBlind.intValue();
-													}
+												}
 													j[xJug].setApuesta(j[xJug].getApuesta() + smallBlind.intValue());
 													//mainPot = mainPot.add(smallBlind);
 													pagarCiegaPequeña = false;
@@ -1016,6 +1051,9 @@ public class Poker {
 															cUs[1].setOculto(false);	    
 														}
 														System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp() + " ALL IN \n");
+													} else if(xJugFin == xJug) {
+														Cartas[] cUs = j[xJug].gUs().getCartas();
+														System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp());
 													} else {
 													
 													Cartas[] cUs = j[xJug].gUs().getCartas();
@@ -1306,6 +1344,9 @@ public class Poker {
 															cUs[1].setOculto(false);	    
 														}
 														System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp() + " ALL IN \n");
+													} else if(xJugFin == xJug) {
+														Cartas[] cUs = j[xJug].gAi().getCartas();
+														System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp());	
 													} else {
 													
 														Cartas[] cUs = j[xJug].gAi().getCartas();
@@ -1522,7 +1563,7 @@ public class Poker {
 													System.out.print(", ");
 												}
 												int x = liGanador.get(k);
-												  BigDecimal premio = pot.getCantidad().divide(BigDecimal.valueOf(liGanador.size()), 0, RoundingMode.HALF_EVEN);		
+												  BigDecimal premio = pot.getCantidad().divide(BigDecimal.valueOf(liGanador.size()), 0, RoundingMode.HALF_DOWN);		
 												  if(j[x].getTipo().equals("us")) {
 													System.out.print(j[x].gUs().getNombre());			
 													j[x].gUs().setStack(j[x].gUs().getStack().add(premio));
@@ -1551,17 +1592,121 @@ public class Poker {
 										}
 									
 									} while (calleActiva);
-									prCiega = (prCiega + 1) % j.length;	
+									prCiega = (prCiega + 1) % j.length;
+									boolean booFin = true;
+									do {
 									System.out.println("\n\n------!OPCIONES FIN DEL JUEGO!------");
+									System.out.println("Nombre Jugador: " + us.getNombre() + "  Dinero: " + us.getDinero() + "   Stack: " + us.getStack() + " fichas ");
+									if(multijugador) {
+										System.out.println("Nombre Jugador: " + us2.getNombre() +"  Dinero: " + us2.getDinero() + "  Stack: " + us2.getStack() + " fichas ");
+									} 
 									System.out.println("-Continuar con la Mesa (1)");
 									System.out.println("-Crear nueva Mesa (2)");
 									System.out.println("-Ingresar mas fichas (3)");
 									System.out.println("-SALIR DEL JUEGO (4)");
+									System.out.print("\nIngrese un numero: ");
 									int respFin = sc.nextInt();
-									
-									switch(respFin) {
-									
-									}
+									boolean stackNuevo = false;
+										
+										switch(respFin) {
+										case(1):
+											if((multijugador && us2.getStack().compareTo(BigDecimal.ZERO) <= 0) || us.getStack().compareTo(BigDecimal.ZERO) <= 0) {
+												System.out.println("Sin fichas no se puede jugar, prueba a ingresar mas fichas");
+											} else {
+												if(!stackNuevo) {
+													if(!multijugador) {
+														if(j[1].gAi().getDinero().compareTo(BigDecimal.ZERO) <= 0) {
+															System.out.print(j[1].gAi().getNombreAI() + " no tiene mas dinero, se va a tener que ir :(");
+															generar1Ai(1);
+															System.out.println("\rCon suerte " + j[1].gAi().getNombreAI() + " le reemplazara");
+														}
+														if(j[2].gAi().getDinero().compareTo(BigDecimal.ZERO) <= 0) {
+															System.out.print(j[2].gAi().getNombreAI() + " no tiene mas dinero, se va a tener que ir :(");
+															generar1Ai(2);
+															System.out.println("\rCon suerte " + j[2].gAi().getNombreAI() + " le reemplazara");
+														}
+														if(j[3].gAi().getDinero().compareTo(BigDecimal.ZERO) <= 0) {
+															System.out.print(j[3].gAi().getNombreAI() + " no tiene mas dinero, se va a tener que ir :(");
+															generar1Ai(3);
+															System.out.println("\rCon suerte " + j[3].gAi().getNombreAI() + " le reemplazara");
+														}
+														booFin = false;
+													}
+												} else {
+													System.out.println("Al obtener un stack nuevo se os obliga a iniciar una mesa nueva");
+												}
+											}
+										break;
+										case(2):
+											if((multijugador && us2.getStack().compareTo(BigDecimal.ZERO) <= 0) || us.getStack().compareTo(BigDecimal.ZERO) <= 0) {
+												System.out.println("Sin fichas no se puede jugar, prueba a ingresar mas fichas");
+											} else {
+												System.out.println("Creando una nueva mesa...");
+												booFin = false;
+												booRn = false;
+												if(multijugador) {
+													stack1 = us.getStack();
+													stack2 = us2.getStack();
+													BigDecimal suma = stack1.add(stack2);
+													stack = suma.divide(BigDecimal.TWO);
+												} else {
+													stack = us.getStack();
+												}
+											}
+										break;
+										case(3):
+											System.out.println("Se te pasara las fichas a dinero.. para luego volver a dar el stack");
+											if(multijugador) {
+												us2.setDinero(us2.getDinero().add(us2.getStack()));
+												us2.setStack(BigDecimal.ZERO);
+												us.setDinero(us.getDinero().add(us.getStack()));
+												us.setStack(BigDecimal.ZERO);
+												if(us2.getDinero().compareTo(BigDecimal.ZERO) <= 0) {
+													System.out.println("A " + us2.getNombre() + " no le queda mas saldo en la cuenta fuera de aqui");
+													booFin = false;
+													booRn = false;
+													partida = false;
+													booPo = false;
+												} else if(us.getDinero().compareTo(BigDecimal.ZERO) <= 0) {
+													System.out.println("A " + us.getNombre() + " no le queda mas saldo en la cuenta fuera de aqui");
+													booFin = false;
+													booRn = false;
+													partida = false;
+													booPo = false;
+												} else {
+													System.out.println("Dinero " + us.getNombre() + ": " + us.getDinero() + "$");
+													System.out.println("Dinero " + us2.getNombre() + ": " + us2.getDinero() + "$");
+													darStack();
+													stackNuevo = true;
+												}
+											} else {
+												us.setDinero(us.getDinero().add(us.getStack()));
+												us.setStack(BigDecimal.ZERO);
+												if(us.getDinero().compareTo(BigDecimal.ZERO) <= 0) {
+													System.out.println("A " + us.getNombre() + " no le queda mas saldo en la cuenta fuera de aqui");
+													booFin = false;
+													booRn = false;
+													partida = false;
+													booPo = false;
+												} else {
+													System.out.println("Dinero: " + us.getDinero());
+													darStack();
+													stackNuevo = true;
+												}
+											}
+										break;
+										case(4):
+											System.out.println("Saliendo...");
+											booFin = false;
+											booRn = false;
+											partida = false;
+											booPo = false;
+										break;
+										default:
+											System.out.println("Caracter No Encontrado");
+										break;	
+										}
+									} while (booFin);
 
 								} while (booRn);
 								

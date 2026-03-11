@@ -59,11 +59,6 @@ public class UmamusumePrettyDerby extends Frame {
 
         while (progreso[xCorree] < 100 && !hayGanador) {
 
-            /*try {
-                Thread.sleep(random.nextInt(200) + 50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
             Met.esperarSeg(random.nextInt(200) + 50);
 
             progreso[xCorree] += random.nextInt(10) + 1;
