@@ -29,8 +29,14 @@ public class Poker {
 	 *  Pot Principal: -1161126736$ WHAAAA PASO DE EL INT MAX VALUE
 	 *  
 	 *  SI SE GENERA UN CUARTO POT (ES DECIR UNO DONDE SOLO HAY EL DINERO SOBRANTE DE UN ALL IN, ESTE DEBE DE DEVOLVER EL DINERO 
-	 *  	ACTUALMENTE DA UN ERROR DE ARRAYOUTOFBOUNDS PORQUE EL METODO LE DA EL DINERO A EL QUE GANA
-	 *  HACER EL EMPATE
+	 *  	ACTUALMENTE DA UN ERROR DE ARRAYOUTOFBOUNDS PORQUE EL METODO LE DA EL DINERO A EL QUE GANA - HECHO
+	 *  HACER EL EMPATE - HECHO
+	 *  CUANDO TERMINE LA PARTIDA, BUSCAR Y LOCALIZAR LOS JUGADORES CON 0 FICHAS
+	 *  	SI ES UNA AI: GENERAR OTRA
+	 *  	SI ES UN JUGADOR SE LE PIDE SI QUIERE MAS FICHAS; O SI NO TIENE DINERO O QUIERE SALIR, SACARLO DE LA PARTIDA
+	 *  		SI MULTIJUGADOR ESTA ACTIVO Y UNO DE LOS JUGADORES NO PUEDE PAGAR:
+	 *  		-SI ES EL INVITADO SE QUITA DEL POKER, SE ESTABLECE "FALSE" EN MULTIJUGADOR, Y SE REINICIA EL POKER; 
+	 *  		-SI ES EL ANFITRION, AUTOMATICAMENTE SE SALE DE POKER HACIA EL MENU (O ESTE PASA A SER EL INVITADO Y SE HACE LO DEL ARRIBA)
 	 *  
 	 */
 	private UsuarioPk us; 
@@ -40,9 +46,6 @@ public class Poker {
 	static final int maxct = 52;
 	static Cartas[] ct = new Cartas[maxct];
 	static Scanner sc = new Scanner(System.in);
-	static ArrayList<Cartas> liCUs = new ArrayList<Cartas>(); //Para Analizar
-	static ArrayList<Cartas> liCAi = new ArrayList<Cartas>();
-	static ArrayList<Cartas> liCTotal = new ArrayList<Cartas>();
 	static BigDecimal stack1;
 	static BigDecimal stack2;
 	static BigDecimal stack;
@@ -195,29 +198,35 @@ public class Poker {
 	    return ct;
 	}
 	
-	public int calcularGanadorEntre(List<Integer> jugadores, Cartas[] ctCentro){
+	/*public int calcularGanadorEntre(List<Integer> jugadores, Cartas[] ctCentro){
 		//TODO EL EMPATE
 	    int xJugMejor = jugadores.get(0);
 	    int jugsEmp = -1;
 
 	    for(int i : jugadores){
-	    	int cacaMu = esIGanador(i, xJugMejor, ctCentro);
 	    	
-	        if(cacaMu== 1){
-	        	xJugMejor = i;
-	        	jugsEmp = -1;
-	        } else if(cacaMu == 2) { //EMPARTE ENTRE DOS 
-	        	if(jugsEmp >= 10) {
-	        		if(jugsEmp >= 100) {
-	        				jugsEmp += xJugMejor*1000;
-	        		} else {
-	        			jugsEmp += xJugMejor*100;
-	        		}
-	        	} else {
-	        		jugsEmp= i + xJugMejor*10;
-	        	}
-	        	xJugMejor = i;	
-	        }
+	    	if(xJugMejor != i) {
+	    		int cacaMu = esIGanador(i, xJugMejor, ctCentro);	    	
+	    		if(cacaMu== 1){
+	    			xJugMejor = i;
+	    			jugsEmp = -1;
+	    		} else if(cacaMu == 2) { //EMPARTE ENTRE DOS 
+	    			if(jugsEmp >= 10) {
+	    				if(jugsEmp >= 100) {
+	    						jugsEmp += xJugMejor*1000;
+	    				} else {
+	    					jugsEmp += xJugMejor*100;
+	    				}
+	    			} else {
+	    				jugsEmp= i + xJugMejor*10;
+	    			}
+	    			xJugMejor = i;	
+	    		}
+	    	} else {
+	    		xJugMejor = i;
+	    		System.out.println("DEBUG ERAN EL MISMO JUGADOR");
+	    	}
+	    		
         	System.out.println("DEBUG JUGADOR INDICE I: " + i);
         	System.out.println("DEBUG JUGADOR MEJOR ACTUAL: " + xJugMejor);
         	System.out.println("DEBUG NUMERO EMPATE: " + jugsEmp);
@@ -228,7 +237,7 @@ public class Poker {
 	    	return jugsEmp;
 	    }
 	    return xJugMejor;
-	}
+	}*/
 	//TODO TODO TODO TODO TODO
 	public List<Integer> calcularGanadoresEntre(List<Integer> jugadores, Cartas[] ctCentro) {
 
@@ -237,15 +246,21 @@ public class Poker {
 	    ganadores.add(xJugMejor);
 
 	    for(int i : jugadores) {
-	        int comp = esIGanador(i, xJugMejor, ctCentro);
-	        if(comp == 1) { 
-	            xJugMejor = i;
-	            ganadores.clear();
-	            ganadores.add(i);
-	        } else if(comp == 2) { 
-	            // empate
-	            ganadores.add(i);
-	        }
+	    	
+	    	if(xJugMejor != i) { 
+	        	int comp = esIGanador(i, xJugMejor, ctCentro);
+	        	if(comp == 1) { 
+	        		xJugMejor = i;
+	        		ganadores.clear();
+	        		ganadores.add(i);
+	        	} else if(comp == 2) { 
+	            //PARA EL EMPATE
+	        		ganadores.add(i);
+	        	}
+	    	} else {
+	    		xJugMejor = i;
+	    		
+	    	}
 	    }
 
 	    return ganadores;
@@ -932,9 +947,19 @@ public class Poker {
 												if(pagarCiega && xJug == prCiega) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
-													j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(smallBlind));
+													
+													if(smallBlind.compareTo(j[xJug].gUs().getStack()) >= 0) {
+														System.out.println("ALL IN a falta de no poder pagar la ciega");
+														smallBlind = j[xJug].gUs().getStack();
+														j[xJug].gUs().setStack(BigDecimal.ZERO);
+														j[xJug].setActionAllIn(true);
+													} else {
+														j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(smallBlind));
+													}
 													potCalle += smallBlind.intValue();
+													if(apuestaCalle < smallBlind.intValue()) {
 													apuestaCalle = smallBlind.intValue();
+													}
 													j[xJug].setApuesta(j[xJug].getApuesta() + smallBlind.intValue());
 													//mainPot = mainPot.add(smallBlind);
 													pagarCiegaPequeña = false;
@@ -944,10 +969,20 @@ public class Poker {
 													checkAvairable = false;
 												} else if(pagarCiega && xJug== (prCiega + 1) % j.length) {
 														System.out.println("CIEGA GRANDE: " + Ciega );	
-														j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(Ciega));
+														
+														if(Ciega.compareTo(j[xJug].gUs().getStack()) >= 0) {
+															System.out.println("ALL IN a falta de no poder pagar la ciega");
+															Ciega = j[xJug].gUs().getStack();
+															j[xJug].gUs().setStack(BigDecimal.ZERO);
+															j[xJug].setActionAllIn(true);
+														} else {
+															j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(Ciega));
+														}
 														potCalle += Ciega.intValue();
-														apuestaCalle = Ciega.intValue();
-														j[xJug].setApuesta(j[xJug].getApuesta() + Ciega.intValue());
+									        	        if(apuestaCalle < Ciega.intValue()) {
+									        	        	apuestaCalle = Ciega.intValue();
+									        	        }
+									        	        j[xJug].setApuesta(j[xJug].getApuesta() + Ciega.intValue());
 														j[xJug].setActionPagoCiegaGrande(true);
 														//mainPot = mainPot.add(Ciega);
 														pagarCiegaGrande = false;
@@ -955,6 +990,20 @@ public class Poker {
 														Cartas[] cUs = j[xJug].gUs().getCartas();
 														System.out.println("MANO:  "  + cUs[0].getCp() + "  " + cUs[1].getCp() + "\n");
 														checkAvairable = false;
+														/*if(Ciega.compareTo(j[xJug].gAi().getDinero()) >= 0) {
+														System.out.println("ALL IN a falta de no poder pagar la ciega");
+														Ciega = j[xJug].gAi().getDinero();
+									        	        j[xJug].gAi().setDinero(BigDecimal.ZERO);
+									        	        j[xJug].setActionAllIn(true);
+													} else {
+														j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(Ciega));	
+													}	
+														potCalle += Ciega.intValue();
+									        	        if(apuestaCalle < Ciega.intValue()) {
+									        	        	apuestaCalle = Ciega.intValue();
+									        	        }
+														j[xJug].setApuesta(j[xJug].getApuesta() + Ciega.intValue());
+														j[xJug].setActionPagoCiegaGrande(true);*/
 												} else {
 													if(j[xJug].isActionFoldeo() == true) {
 														Cartas[] cUs = j[xJug].gUs().getCartas();
@@ -1069,27 +1118,36 @@ public class Poker {
 													        	    } else if(num < j[xJug].gUs().getStack().intValue()) {
 													        	        j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(new BigDecimal(num)));
 													        	        potCalle += num;
-													        	        apuestaCalle = num;
+														        	    if(apuestaCalle < j[xJug].gUs().getStack().intValue()) {
+														        	    	apuestaCalle = j[xJug].gUs().getStack().intValue();
+														        	    }
 													        	        j[xJug].setApuesta(j[xJug].getApuesta() + num);
 													        	        checkAvairable = false;
+													        	        fin--;
 													        	    } else if(num == j[xJug].gUs().getStack().intValue()) {
 													        	        potCalle += j[xJug].gUs().getStack().intValue();
-													        	        apuestaCalle = j[xJug].gUs().getStack().intValue();
+														        	    if(apuestaCalle < j[xJug].gUs().getStack().intValue()) {
+														        	    	apuestaCalle = j[xJug].gUs().getStack().intValue();
+														        	    }
 													        	        j[xJug].setApuesta(j[xJug].getApuesta() + j[xJug].gUs().getStack().intValue());
 													        	        j[xJug].gUs().setStack(BigDecimal.ZERO);
 													        	        j[xJug].setActionAllIn(true);
 														        	    checkAvairable = false;
+														        	    fin--;
 													        	    } else { 
 													        	    	System.out.println("FICHAS INSUFIENTES");
 														        	    boorespAcciones = true;
 													        	    }
 													        	} else if(betresp.equalsIgnoreCase("ALL IN")) {
 													        	    potCalle += j[xJug].gUs().getStack().intValue();
-												        	        apuestaCalle = j[xJug].gUs().getStack().intValue();
+													        	    if(apuestaCalle < j[xJug].gUs().getStack().intValue()) {
+													        	    	apuestaCalle = j[xJug].gUs().getStack().intValue();
+													        	    }
 													        	    j[xJug].setApuesta(j[xJug].getApuesta() + j[xJug].gUs().getStack().intValue());
 													        	    j[xJug].gUs().setStack(BigDecimal.ZERO);
 													        	    j[xJug].setActionAllIn(true);
 													        	    checkAvairable = false;
+													        	    fin--;
 													        	} else if(betresp.equalsIgnoreCase("SALIR")) {
 													        	    boorespAcciones = true;
 													        	} else {
@@ -1112,16 +1170,22 @@ public class Poker {
 													        	    } else if(num < j[xJug].gUs().getStack().intValue()) {
 													        	        j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(new BigDecimal(num)));
 													        	        potCalle += num;
-													        	        apuestaCalle = num;
+														        	    if(apuestaCalle < j[xJug].gUs().getStack().intValue()) {
+														        	    	apuestaCalle = j[xJug].gUs().getStack().intValue();
+														        	    }
 													        	        j[xJug].setApuesta(j[xJug].getApuesta() + num);
 													        	        checkAvairable = false;
+													        	        fin--;
 													        	    } else if(num == j[xJug].gUs().getStack().intValue()) {
 													        	        potCalle += j[xJug].gUs().getStack().intValue();
-													        	        apuestaCalle = j[xJug].gUs().getStack().intValue();
+														        	    if(apuestaCalle < j[xJug].gUs().getStack().intValue()) {
+														        	    	apuestaCalle = j[xJug].gUs().getStack().intValue();
+														        	    }
 													        	        j[xJug].setApuesta(j[xJug].getApuesta() + j[xJug].gUs().getStack().intValue());
 													        	        j[xJug].gUs().setStack(BigDecimal.ZERO);
 													        	        j[xJug].setActionAllIn(true);
 														        	    checkAvairable = false;
+														        	    fin--;
   
 													        	    } else { 
 													        	    	System.out.println("FICHAS INSUFIENTES");
@@ -1129,11 +1193,14 @@ public class Poker {
 													        	    }
 													        	} else if(raiseResp.equalsIgnoreCase("ALL IN")) {
 													        	    potCalle += j[xJug].gUs().getStack().intValue();
-													        	    apuestaCalle = j[xJug].gUs().getStack().intValue();
+													        	    if(apuestaCalle < j[xJug].gUs().getStack().intValue()) {
+													        	    	apuestaCalle = j[xJug].gUs().getStack().intValue();
+													        	    }
 													        	    j[xJug].setApuesta(j[xJug].getApuesta() + j[xJug].gUs().getStack().intValue());
 													        	    j[xJug].gUs().setStack(BigDecimal.ZERO);
 													        	    j[xJug].setActionAllIn(true);
 													        	    checkAvairable = false;
+													        	    fin--;
 													        	} else if(raiseResp.equalsIgnoreCase("SALIR")) {
 													        	    boorespAcciones = true;
 													        	} else {
@@ -1181,10 +1248,21 @@ public class Poker {
 												if(pagarCiega && xJug == prCiega) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
 													System.out.println("CIEGA PEQUEÑA: " + smallBlind );	
-													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(smallBlind));
+													
+													if(smallBlind.compareTo(j[xJug].gAi().getDinero()) >= 0) {
+														System.out.println("ALL IN a falta de no poder pagar la ciega");
+														smallBlind = j[xJug].gAi().getDinero();
+														j[xJug].gAi().setDinero(BigDecimal.ZERO);
+														j[xJug].setActionAllIn(true);
+													} else {
+														j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(smallBlind));
+													}
 													potCalle += smallBlind.intValue();
-													apuestaCalle = smallBlind.intValue();
+													if(apuestaCalle < smallBlind.intValue()) {
+														apuestaCalle = smallBlind.intValue();
+													}
 													j[xJug].setApuesta(j[xJug].getApuesta() + smallBlind.intValue());
+													
 													//mainPot = mainPot.add(smallBlind);
 													pagarCiegaPequeña = false;
 													
@@ -1193,12 +1271,23 @@ public class Poker {
 													checkAvairable = false;
 												} else if(pagarCiega && xJug == (prCiega + 1) % j.length) {
 													System.out.println("CIEGA GRANDE: " + Ciega );	
-													j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(Ciega));	
-													potCalle += Ciega.intValue();
-													apuestaCalle = Ciega.intValue();
-													j[xJug].setApuesta(j[xJug].getApuesta() + Ciega.intValue());
-													j[xJug].setActionPagoCiegaGrande(true);
-
+													
+													//TODO HACER QUE ESTE MODELO DE CIEGA ESTE EN TODAS LAS CIEGAS
+													if(Ciega.compareTo(j[xJug].gAi().getDinero()) >= 0) {
+														System.out.println("ALL IN a falta de no poder pagar la ciega");
+														Ciega = j[xJug].gAi().getDinero();
+									        	        j[xJug].gAi().setDinero(BigDecimal.ZERO);
+									        	        j[xJug].setActionAllIn(true);
+													} else {
+														j[xJug].gAi().setDinero(j[xJug].gAi().getDinero().subtract(Ciega));	
+													}	
+														potCalle += Ciega.intValue();
+									        	        if(apuestaCalle < Ciega.intValue()) {
+									        	        	apuestaCalle = Ciega.intValue();
+									        	        }
+														j[xJug].setApuesta(j[xJug].getApuesta() + Ciega.intValue());
+														j[xJug].setActionPagoCiegaGrande(true);
+													
 													//mainPot = mainPot.add(Ciega);
 													pagarCiegaGrande = false;
 													
@@ -1229,11 +1318,14 @@ public class Poker {
 														System.out.println("\rAUN NO HE HECHO LA TOMA DE DECISIONES DE LA AI ASI QUE VA IR ALL IN QUE TE JODAN");
 														//j[xJug].setActionFoldeo(true);
 									        	        potCalle += j[xJug].gAi().getDinero().intValue();
-									        	        apuestaCalle = j[xJug].gAi().getDinero().intValue();
+									        	        if(apuestaCalle < j[xJug].gAi().getDinero().intValue()) {
+									        	        	apuestaCalle = j[xJug].gAi().getDinero().intValue();
+									        	        }
 									        	        j[xJug].setApuesta(j[xJug].getApuesta() + j[xJug].gAi().getDinero().intValue());
 									        	        j[xJug].gAi().setDinero(BigDecimal.ZERO);
 									        	        j[xJug].setActionAllIn(true);
 										        	    checkAvairable = false;
+										        	    fin--;
 														
 													}
 												}
@@ -1405,64 +1497,48 @@ public class Poker {
 											if(pot.getCantidad().compareTo(BigDecimal.ZERO) == 0) {
 												continue;
 											}
-											int x = calcularGanadorEntre(pot.getJugador(), Ctcentro);
+											
+											//int x = calcularGanadorEntre(pot.getJugador(), Ctcentro);
+											List<Integer> liGanador = calcularGanadoresEntre(pot.getJugador(), Ctcentro);
 											switch(i) {
 											case(0):
 												System.out.print("Ganador del Pot Principal: ");
-												if(j[x].getTipo().equals("us")) {
-													System.out.print(j[x].gUs().getNombre());
-													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
-												} else {
-													System.out.print(j[x].gAi().getNombreAI());
-													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
-												}
 											break;
 											case(1):
 												System.out.print("Ganador del Pot Segundario: ");
-												if(j[x].getTipo().equals("us")) {
-													System.out.print(j[x].gUs().getNombre());
-													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
-												} else {
-													System.out.print(j[x].gAi().getNombreAI());
-													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
-												}
 											break;
 											case(2):
 												System.out.print("Ganador del Pot Terciario: ");
-												if(j[x].getTipo().equals("us")) {
-													System.out.print(j[x].gUs().getNombre());
-													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
-												} else {
-													System.out.print(j[x].gAi().getNombreAI());
-													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
-												}
 											break;
 											case(3):
 												System.out.print("Ganador del Pot Cuarternario: ");
-												if(j[x].getTipo().equals("us")) {
-													System.out.print(j[x].gUs().getNombre());
-													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
-												} else {
-													System.out.print(j[x].gAi().getNombreAI());
-													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
-												}
 											break;
 											default:
 												System.out.print("Ganador del Pot " + i + ": ");
-												if(j[x].getTipo().equals("us")) {
-													System.out.print(j[x].gUs().getNombre());
-													j[x].gUs().setStack(j[x].gUs().getStack().add(pot.getCantidad()));
+											break;
+											}
+											for(int k = 0; k<liGanador.size(); ++k) {
+												if(k != 0) {
+													System.out.print(", ");
+												}
+												int x = liGanador.get(k);
+												  BigDecimal premio = pot.getCantidad().divide(BigDecimal.valueOf(liGanador.size()), 0, RoundingMode.HALF_EVEN);		
+												  if(j[x].getTipo().equals("us")) {
+													System.out.print(j[x].gUs().getNombre());			
+													j[x].gUs().setStack(j[x].gUs().getStack().add(premio));
 												} else {
 													System.out.print(j[x].gAi().getNombreAI());
-													j[x].gAi().setDinero(j[x].gAi().getDinero().add(pot.getCantidad()));
+													j[x].gAi().setDinero(j[x].gAi().getDinero().add(premio));
 												}
+												  System.out.println("  +" + premio + "$");
 											}
-											System.out.println("");
 											
-										}
+											System.out.println("");
+											}
+										
 										/*	public void repartirPots(List<Pot> pots){
 
-	    for(Pot p : pots){
+	    for(Pot p : pots){	
 
 	        int ganador = calcularGanadorEntre(p.jugador);
 
@@ -1476,7 +1552,16 @@ public class Poker {
 									
 									} while (calleActiva);
 									prCiega = (prCiega + 1) % j.length;	
-
+									System.out.println("\n\n------!OPCIONES FIN DEL JUEGO!------");
+									System.out.println("-Continuar con la Mesa (1)");
+									System.out.println("-Crear nueva Mesa (2)");
+									System.out.println("-Ingresar mas fichas (3)");
+									System.out.println("-SALIR DEL JUEGO (4)");
+									int respFin = sc.nextInt();
+									
+									switch(respFin) {
+									
+									}
 
 								} while (booRn);
 								

@@ -24,7 +24,7 @@ public class UmamusumePrettyDerby extends Frame {
         Scanner sc = new Scanner(System.in);
 
         Met.empujarMucho();
-        System.out.println("------ APUESTAS CARRERA ------");
+        System.out.println("-----|APUESTAS CARRERA|------");
         System.out.println("Dinero disponible: " + us.getDinero());
 
         System.out.print("\nElige una Caballo (1-4): ");
@@ -33,7 +33,7 @@ public class UmamusumePrettyDerby extends Frame {
         System.out.print("\nCantidad a apostar: ");
         apuesta = sc.nextBigDecimal();
 
-        // restar dinero apostado
+        // Restar dinero apostado
         us.setDinero(us.getDinero().subtract(apuesta));
 
         progreso = new int[numCaballos];
@@ -43,32 +43,38 @@ public class UmamusumePrettyDerby extends Frame {
         setVisible(true);
 
         for (int i = 0; i < numCaballos; i++) {
-            final int index = i;
-            new Thread(() -> correr(index)).start();
+            final int xCorree = i;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    correr(xCorree);
+                }
+            }).start();
         }
     }
 
-    private void correr(int index) {
+    private void correr(int xCorree) {
 
         Random random = new Random();
 
-        while (progreso[index] < 100 && !hayGanador) {
+        while (progreso[xCorree] < 100 && !hayGanador) {
 
-            try {
+            /*try {
                 Thread.sleep(random.nextInt(200) + 50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
+            Met.esperarSeg(random.nextInt(200) + 50);
 
-            progreso[index] += random.nextInt(10) + 1;
+            progreso[xCorree] += random.nextInt(10) + 1;
 
             synchronized (this) {
 
-                if (progreso[index] >= 100 && !hayGanador) {
+                if (progreso[xCorree] >= 100 && !hayGanador) {
 
-                    progreso[index] = 100;
+                    progreso[xCorree] = 100;
                     hayGanador = true;
-                    ganador = index;
+                    ganador = xCorree;
 
                     System.out.println("\nGANADOR: Caballo " + (ganador + 1));
 
@@ -102,8 +108,13 @@ public class UmamusumePrettyDerby extends Frame {
 
             g.setColor(Color.LIGHT_GRAY);
             g.fillRect(150, y, 300, 20);
-
-            g.setColor(i == ganador ? Color.GREEN : Color.BLUE);
+          
+            if(i == ganador) {
+            	g.setColor(Color.GREEN);
+            } else {
+            	g.setColor(Color.BLUE);
+            }
+            
             g.fillRect(150, y, progreso[i] * 3, 20);
 
             g.setColor(Color.BLACK);
