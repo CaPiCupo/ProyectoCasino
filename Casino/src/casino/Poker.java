@@ -1016,9 +1016,11 @@ public class Poker {
 		us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
 		System.out.println("TURNOS DEUDA SOBRANTES: " + us.getUsuario().getTmEnDeuda());
 		}
-		if(us2.getUsuario().getTmEnDeuda() != -1 && multijugador) {
+		if(multijugador) {
+			if(us2.getUsuario().getTmEnDeuda() != -1 ) {
 		us2.getUsuario().setTmEnDeuda(us2.getUsuario().getTmEnDeuda() -1);
 		System.out.println("TURNOS DEUDA SOBRANTES: " + us2.getUsuario().getTmEnDeuda());
+			}
 		}
 		boolean booPo;
 		do {
@@ -1200,7 +1202,7 @@ public class Poker {
 												System.out.println("POT: " + (potCalle + mainPot.intValue()) + "    (POT TOTAL " + mainPot.intValue() + " + " + "POT CALLE " + potCalle + ")" );
 												System.out.println("APUESTA CALLE ACTUAL: " + apuestaCalle);
 												System.out.println("APUESTA JUGADOR: " + j[xJug].getApuesta());
-												int minApuesta = apuestaCalle - j[xJug].getApuesta();
+												int minApuesta = Math.abs(apuestaCalle - j[xJug].getApuesta());
 												//CIEGA
 												if(pagarCiega && xJug == prCiega) {
 													BigDecimal smallBlind = Ciega.divide(BigDecimal.TWO).setScale(0 , RoundingMode.CEILING);
@@ -1379,10 +1381,11 @@ public class Poker {
 													        	    } else if(num < j[xJug].gUs().getStack().intValue()) {
 													        	        j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(new BigDecimal(num)));
 													        	        potCalle += num;
-														        	    if(apuestaCalle < num) {
-														        	    	apuestaCalle = num;
+													        	        int apuestaTotal = j[xJug].getApuesta() + num;
+														        	    if(apuestaCalle < apuestaTotal) {
+														        	    	apuestaCalle = apuestaTotal;
 														        	    }
-													        	        j[xJug].setApuesta(j[xJug].getApuesta() + num);
+													        	        j[xJug].setApuesta(apuestaTotal);
 													        	        checkAvairable = false;
 													        	        fin--;
 													        	    } else if(num == j[xJug].gUs().getStack().intValue()) {
@@ -1431,10 +1434,11 @@ public class Poker {
 													        	    } else if(num < j[xJug].gUs().getStack().intValue()) {
 													        	        j[xJug].gUs().setStack(j[xJug].gUs().getStack().subtract(new BigDecimal(num)));
 													        	        potCalle += num;
-														        	    if(apuestaCalle < num) {
-														        	    	apuestaCalle = num;
+													        	        int apuestaTotal = j[xJug].getApuesta() + num;
+														        	    if(apuestaCalle < apuestaTotal) {
+														        	    	apuestaCalle = apuestaTotal;
 														        	    }
-													        	        j[xJug].setApuesta(j[xJug].getApuesta() + num);
+													        	        j[xJug].setApuesta(apuestaTotal);
 													        	        checkAvairable = false;
 													        	        fin--;
 													        	    } else if(num == j[xJug].gUs().getStack().intValue()) {
@@ -1688,7 +1692,7 @@ public class Poker {
 															inxFarol += datoBFarol;
 														}
 														System.out.println("DEBUG NUM FAROL: " + inxFarol);
-														if(inxFarol >= 20) {
+														if(inxFarol >= 15) {
 															
 															//VA FAROL
 															j[xJug].gAi().setFarol(true);
@@ -2066,9 +2070,11 @@ public class Poker {
 													us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
 													System.out.println("TURNOS DEUDA SOBRANTES: " + us.getUsuario().getTmEnDeuda());
 													}
-													if(us2.getUsuario().getTmEnDeuda() != -1 && multijugador) {
+													if(multijugador) {
+														if(us2.getUsuario().getTmEnDeuda() != -1) {
 													us2.getUsuario().setTmEnDeuda(us2.getUsuario().getTmEnDeuda() -1);
 													System.out.println("TURNOS DEUDA SOBRANTES: " + us2.getUsuario().getTmEnDeuda());
+														}
 													}
 												if(!stackNuevo) {
 													if(!multijugador) {
@@ -2126,9 +2132,11 @@ public class Poker {
 													us.getUsuario().setTmEnDeuda(us.getUsuario().getTmEnDeuda() -1);
 													System.out.println("TURNOS DEUDA SOBRANTES: " + us.getUsuario().getTmEnDeuda());
 													}
-													if(us2.getUsuario().getTmEnDeuda() != -1 && multijugador) {
+													if(multijugador) {
+														if(us2.getUsuario().getTmEnDeuda() != -1) {
 													us2.getUsuario().setTmEnDeuda(us2.getUsuario().getTmEnDeuda() -1);
 													System.out.println("TURNOS DEUDA SOBRANTES: " + us2.getUsuario().getTmEnDeuda());
+														}
 													}
 												booFin = false;
 												booRn = false;
