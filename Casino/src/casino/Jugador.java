@@ -5,6 +5,7 @@ public class Jugador{
 	private PokerAI ai;
 	private int apuestaJugador;
 	//private int apuestaTotalJugador;
+	private int apuestaCalle;
 	private String tipo;
 	private boolean actionFoldeo;
 	private boolean actionCheckIgualar;	
@@ -96,8 +97,14 @@ public class Jugador{
 	public void setActionPagoCiegaGrande(boolean actionPagoCiegaGrande) {
 		this.actionPagoCiegaGrande = actionPagoCiegaGrande;
 	}
+
+	public int getApuestaCalle() {
+		return apuestaCalle;
+	}
+
+	public void setApuestaCalle(int apuestaCalle) {
+		this.apuestaCalle = apuestaCalle;
+	}
 	
 	
-}
-
-
+}							

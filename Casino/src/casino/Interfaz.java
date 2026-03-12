@@ -368,6 +368,7 @@ public class Interfaz {
 					 "\n   -Apuestas de Caballos (1)" +	
 					 "\n   -Poker (2)" +
 					 "\n   -BlackJack (3)" +
+					 "\n   -Subasta Cartas (4)"	+
 					 "\n   -DESACTIVAR MULTIJUGADOR (4)" +	
 					 "\n   -Salir (5)" );
 					} else {
@@ -498,9 +499,9 @@ public class Interfaz {
 				case(4): 
 				Collections.addAll(setNombresCreditos, "Mario Hidalgo Rodriguez Cruz", "Ricardo Fernando Raymundo Saldaña ","Pedro Manuel Maqueda Diaz");
 				List<String> lista = new ArrayList<>(setNombresCreditos);
-				System.out.println(lista.get(1) + ": Interfaz, Carrera Caballos y Poker");
+				System.out.println(lista.get(1) + ": Carrera Caballos y Poker");
 				System.out.println(lista.get(0) + ": Subasta Cartas");
-				System.out.println(lista.get(2) + ": BlackJack");
+				System.out.println(lista.get(2) + ": Interfaz y BlackJack ");
 				System.out.println("\nGRACIAS POR DISFRUTAS DE LOS FRUTOS DE ESTE PROYECTO :)");
 				break;
 				case(5):

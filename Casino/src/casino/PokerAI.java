@@ -12,6 +12,7 @@ public class PokerAI {
 	private BigDecimal valueP;
 	private BigDecimal eulerValue;
 	private BigDecimal dinero;
+	private boolean farol;
 	private int calleAct;
 	private int posicion;
 	private boolean multijugador;
@@ -123,6 +124,15 @@ public class PokerAI {
 	public void setNombreAI(String nombreAI) {
 		this.nombreAI = nombreAI;
 	}
+
+	public boolean isFarol() {
+		return farol;
+	}
+
+	public void setFarol(boolean farol) {
+		this.farol = farol;
+	}
+	
 	
 	
 }

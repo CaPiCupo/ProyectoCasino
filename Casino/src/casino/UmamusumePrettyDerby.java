@@ -18,7 +18,8 @@ public class UmamusumePrettyDerby extends Frame {
     private BigDecimal apuesta;
 
     public UmamusumePrettyDerby(Usuario us) {
-
+    	super();
+    	Container c = new Container();
         this.us = us;
 
         Scanner sc = new Scanner(System.in);
@@ -37,10 +38,13 @@ public class UmamusumePrettyDerby extends Frame {
         us.setDinero(us.getDinero().subtract(apuesta));
 
         progreso = new int[numCaballos];
-
+        
+        //Puedo usar metodos del frame sin haber antes usado el constructor ya que el compilador automáticamente añade un constructor por defecto "hace super()"
+        
         setTitle("Carrera de Caballos");
         setSize(600, 300);
         setVisible(true);
+        
 
         for (int i = 0; i < numCaballos; i++) {
             final int xCorree = i;
@@ -51,6 +55,8 @@ public class UmamusumePrettyDerby extends Frame {
                 }
             }).start();
         }
+        Met.esperarSeg(10000);
+        dispose();
     }
 
     private void correr(int xCorree) {
